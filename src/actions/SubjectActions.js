@@ -5,10 +5,9 @@ class SubjectActions {
 
   saveSelection(subjects) {
     return (dispatch) => {
-      axios.post('http://localhost:3004/subjects', {subjects})
+      axios.post('http://localhost:5000/api/subjects', {subjects})
         .then(function (response) {
-          debugger;
-          dispatch(response.data);
+          dispatch(response.data.responseSaved);
         })
         .catch(function (error) {
           console.error(error);
@@ -18,9 +17,9 @@ class SubjectActions {
 
   fetchSubjects() {
     return (dispatch) => {
-      axios.get('http://localhost:3004/subjects')
+      axios.get('http://localhost:5000/api/subjects')
         .then(response => {
-          dispatch(response.data);
+          dispatch(response.data.subjects);
         })
         .catch((errorMessage) => {
           console.error(errorMessage);

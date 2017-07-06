@@ -12,7 +12,6 @@ class App extends PureComponent {
   }
 
   componentDidUpdate() {
-    debugger;
     if (this.props.responseSaved) {
       SubjectActions.fetchSubjects();
     }

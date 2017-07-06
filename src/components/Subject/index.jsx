@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import './Subject.css';
-import PropTypes from 'prop-types'; //https://www.npmjs.com/package/prop-types
+import PropTypes from 'prop-types'; //1
 
 class Subject extends Component {
 
   constructor() {
     super();
-    this.handleClick = this.handleClick.bind(this);
+    this.handleClick = this.handleClick.bind(this); //2
   }
 
   handleClick(e) {
-    this.props.onClick(this.props.subjectId);
+    this.props.onClick(this.props.subjectId); //3
   }
 
   render() {
@@ -31,7 +31,7 @@ Subject.propTypes = {
   subjectId: PropTypes.number
 };
 
-Subject.defaultProps = { //https://www.newmediacampaigns.com/blog/refactoring-react-components-to-es6-classes
+Subject.defaultProps = { //2
   onClick: function(value) {
     console.log(value);
   },
@@ -42,3 +42,10 @@ Subject.defaultProps = { //https://www.newmediacampaigns.com/blog/refactoring-re
 };
 
 export default Subject;
+
+/**
+ * Sources
+ * 1. https://www.npmjs.com/package/prop-types
+ * 2. https://www.newmediacampaigns.com/blog/refactoring-react-components-to-es6-classes
+ * 3. https://stackoverflow.com/questions/26176519/reactjs-call-parent-method
+ */

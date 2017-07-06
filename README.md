@@ -1,6 +1,6 @@
 run:
-1. Run react server
-2. Run http server
+1. Run react server (start_TOT_react)
+2. Run http server (start_TOT_rest_python_server)
 
 TODO
 3. Create button handler that posts results to the backend server. 
