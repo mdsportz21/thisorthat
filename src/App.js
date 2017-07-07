@@ -19,7 +19,7 @@ class App extends PureComponent {
 
   onClick(subjectId) {
     this.props.subjects.forEach((subject) => {
-      subject.selected = (subject.id === subjectId);
+      subject.selected = (subject._id === subjectId);
     });
     SubjectActions.saveSelection(this.props.subjects);
   }
@@ -43,7 +43,7 @@ class App extends PureComponent {
         </div>
         <div className="Subjects">
             <Subject 
-              subjectId={subjectOne.id}
+              subjectId={subjectOne._id}
               imgLink={subjectOne.imgLink} 
               altText={subjectOne.imgDesc}
               description={subjectOne.description}
@@ -51,7 +51,7 @@ class App extends PureComponent {
               />
             <h3 className="Or">or</h3>
             <Subject 
-              subjectId={subjectTwo.id}
+              subjectId={subjectTwo._id}
               imgLink={subjectTwo.imgLink}
               altText={subjectTwo.imgDesc}
               description={subjectTwo.description}

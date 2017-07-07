@@ -28,7 +28,7 @@ Subject.propTypes = {
   imgLink: PropTypes.string,
   altText: PropTypes.string,
   description: PropTypes.string,
-  subjectId: PropTypes.number
+  subjectId: PropTypes.object
 };
 
 Subject.defaultProps = { //2
@@ -37,8 +37,7 @@ Subject.defaultProps = { //2
   },
   imgLink: '',
   altText: '',
-  description: '',
-  subjectId: -1
+  description: ''
 };
 
 export default Subject;
