@@ -41,6 +41,8 @@ class App extends PureComponent {
     const subjectOne = subjects[0];
     const subjectTwo = subjects[1];
 
+    const rankings = this.props.rankings;
+
     return (
       <div className="App">
         <div className="Title">
@@ -63,7 +65,9 @@ class App extends PureComponent {
               onClick={(e) => this.onClick(e)}
               />
         </div>
-        <Rankings />
+        <Rankings
+          rankings={rankings} 
+          />
       </div>
     );
   }
