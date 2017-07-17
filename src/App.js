@@ -4,16 +4,21 @@ import Subject from './components/Subject';
 import SubjectStore from './stores/SubjectStore';
 import SubjectActions from './actions/SubjectActions';
 import connectToStores from 'alt-utils/lib/connectToStores';
+import Rankings from './components/Rankings';
+import RankingsStore from './stores/RankingsStore';
+import RankingsActions from './actions/RankingsActions';
 
 class App extends PureComponent {
 
   componentDidMount() {
     SubjectActions.fetchSubjects();
+    RankingsActions.fetchRankings();
   }
 
   componentDidUpdate() {
     if (this.props.responseSaved) {
       SubjectActions.fetchSubjects();
+      RankingsActions.fetchRankings();
     }
   }
 
@@ -58,17 +63,24 @@ class App extends PureComponent {
               onClick={(e) => this.onClick(e)}
               />
         </div>
+        <Rankings />
       </div>
     );
   }
 }
 
 App.getStores = function() {
-  return [SubjectStore];
+  return [SubjectStore, RankingsStore];
 };
 
 App.getPropsFromStores = function() {
-  return SubjectStore.getState();
+  const subjectState = SubjectStore.getState();
+  const rankingsState = RankingsStore.getState();
+  return {
+    subjects: subjectState.subjects,
+    responseSaved: subjectState.responseSaved,
+    rankings: rankingsState.rankings
+  };
 };
 
 export default connectToStores(App);
