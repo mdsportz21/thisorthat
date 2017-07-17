@@ -12,7 +12,7 @@ class Rankings extends Component {
         accessor: 'rank'
       },{
         accessor: 'imgLink',
-        Cell: props => <span><img className="imgLink" src={props.value}/></span>
+        Cell: props => <span><img className="imgLink" src={props.value} alt=""/></span>
       },{
         Header: 'Description',
         accessor: 'description'
@@ -25,7 +25,7 @@ class Rankings extends Component {
         <ReactTable
           data={this.props.rankings}
           columns={columns}
-          pageSize={Math.min(4,20)}
+          pageSize={Math.min(this.props.rankings.length,20)}
         />
       </div>
     );
