@@ -2,8 +2,28 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import './Rankings.css';
+import PropTypes from 'prop-types';
+import RankingsStore from '../../stores/RankingsStore';
 
 class Rankings extends Component {
+
+  constructor() {
+    super();
+    this.RankingsStore = RankingsStore;
+  }
+
+  victimsFunction(props) {
+    // return (<span>{props.value}</span>);
+    const listItems = props.value.map((victimId) => (
+      <li key={victimId}>{this.getDescription(victimId)}</li>
+    ));
+    return <span className="victims">{listItems}</span>;
+  }
+
+  getDescription(subjectId) {
+    const subject = this.RankingsStore.getSubjectById(subjectId);
+    return subject.description;
+  }
 
   render() {
     const columns = [{
@@ -16,6 +36,10 @@ class Rankings extends Component {
       },{
         Header: 'Description',
         accessor: 'description'
+      },{
+        Header: 'Victims',
+        accessor: 'victims', 
+        Cell: props => this.victimsFunction(props)
       }]
     }];
 
@@ -31,5 +55,19 @@ class Rankings extends Component {
     );
   }
 }
+
+Rankings.propTypes = {
+  rank: PropTypes.number,
+  imgLink: PropTypes.string,
+  description: PropTypes.string,
+  victims: PropTypes.array
+};
+
+Rankings.defaultProps = {
+  rank: 999999,
+  imgLink: '',
+  description: '',
+  victims: []
+};
 
 export default Rankings;

@@ -17,7 +17,7 @@ class SubjectStore {
     this.setState( { 
       subjects,
       responseSaved: false
-   } );
+    });
   }
 
   handleSaveSelection(responseSaved) {
