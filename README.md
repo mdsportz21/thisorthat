@@ -10,5 +10,8 @@ TODO
 7. Fetch and display the results on the UI.
 8. Create a scraper for my own squarespace site to pull the subject data.
 
+Install
+1. npm install rc-progress
+
 Sources:
 1. https://github.com/goatslacker/alt

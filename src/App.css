@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
   padding: 20px;
 }
 
@@ -28,6 +28,12 @@
   display: flex;
   padding: 20px;
   width: 500px;
+}
+
+.line {
+  width: 500px;
+  padding-top: 20px;
+  padding-bottom: 40px;
 }
 
 .Or {    

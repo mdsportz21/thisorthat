@@ -13,10 +13,13 @@ class SubjectStore {
     };
   }
 
-  handleFetchSubjects(subjects) {
+  handleFetchSubjects(subjectResponse) {
+    const subjects = subjectResponse.subjects;
+    const percentCompleted = subjectResponse.percentCompleted; 
     this.setState( { 
       subjects,
-      responseSaved: false
+      responseSaved: false,
+      percentCompleted
     });
   }
 

@@ -19,7 +19,7 @@ class SubjectActions {
     return (dispatch) => {
       axios.get('http://localhost:5000/api/subjects')
         .then(response => {
-          dispatch(response.data.subjects);
+          dispatch(response.data); // {subjects: {}, percentCompleted: number}
         })
         .catch((errorMessage) => {
           console.error(errorMessage);

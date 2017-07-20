@@ -7,6 +7,7 @@ import connectToStores from 'alt-utils/lib/connectToStores';
 import Rankings from './components/Rankings';
 import RankingsStore from './stores/RankingsStore';
 import RankingsActions from './actions/RankingsActions';
+import { Line } from 'rc-progress';
 
 class App extends PureComponent {
 
@@ -42,6 +43,7 @@ class App extends PureComponent {
     const subjectTwo = subjects[1];
 
     const rankings = this.props.rankings;
+    const percentCompleted = (this.props.percentCompleted * 100).toString();
 
     return (
       <div className="App">
@@ -65,6 +67,10 @@ class App extends PureComponent {
               onClick={(e) => this.onClick(e)}
               />
         </div>
+        <div className="line">
+          <div>Comparisons Completed: {percentCompleted}%</div>
+          <Line percent={percentCompleted} strokeWidth="2" strokeColor="#000000" />
+        </div>
         <Rankings
           rankings={rankings} 
           />
@@ -83,6 +89,7 @@ App.getPropsFromStores = function() {
   return {
     subjects: subjectState.subjects,
     responseSaved: subjectState.responseSaved,
+    percentCompleted: subjectState.percentCompleted,
     rankings: rankingsState.rankings
   };
 };
