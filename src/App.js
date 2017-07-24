@@ -43,7 +43,7 @@ class App extends PureComponent {
     const subjectTwo = subjects[1];
 
     const rankings = this.props.rankings;
-    const percentCompleted = (this.props.percentCompleted * 100).toString();
+    const percentCompleted = (this.props.percentCompleted * 100).toFixed(1);
 
     return (
       <div className="App">
