@@ -17,8 +17,8 @@ class Rankings extends Component {
     const listItems = props.value.map((victimId) => (
       <li key={victimId}>{this.getDescription(victimId)}</li>
     ));
-    const listItemsSubset = listItems.slice(0, 4);
-    const ellipses = listItemsSubset.length < listItems.length ? '...' : '';
+    // const listItemsSubset = listItems.slice(0, 4);
+    const ellipses = ''; // listItemsSubset.length < listItems.length ? '...' : '';
     return <span className="victims">{listItems}{ellipses}</span>;
   }
 
@@ -45,6 +45,9 @@ class Rankings extends Component {
         id: 'losses',
         Header: 'Losses',
         accessor: d => (d.faced - d.wins)
+      },{
+        Header: 'Total',
+        accessor: 'faced'
       },{
         Header: 'Victims',
         accessor: 'victims', 
