@@ -31,27 +31,39 @@ class Rankings extends Component {
     const columns = [{
       columns: [{
         Header: 'Rank',
-        accessor: 'rank'
+        accessor: 'rank',
+        maxWidth: 70
       },{
         accessor: 'imgLink',
-        Cell: props => <span><img className="imgLink" src={props.value} alt=""/></span>
+        Cell: props => <span><img className="imgLink" src={props.value} alt=""/></span>,
+        maxWidth: 85
       },{
         Header: 'Description',
         accessor: 'description'
       },{
         Header: 'Wins',
-        accessor: 'wins'
+        accessor: 'wins',
+        maxWidth: 70
       },{
         id: 'losses',
         Header: 'Losses',
-        accessor: d => (d.faced - d.wins)
+        accessor: d => (d.faced - d.wins),
+        maxWidth: 70
       },{
         Header: 'Total',
-        accessor: 'faced'
+        accessor: 'faced',
+        maxWidth: 70
       },{
         Header: 'Victims',
         accessor: 'victims', 
-        Cell: props => this.victimsFunction(props)
+        Cell: props => this.victimsFunction(props),
+        style: {
+          'justify-content': 'left',
+          'padding': '20px'
+        }
+      },{
+        accessor: 'selected',
+        show: false
       }]
     }];
 
@@ -63,6 +75,13 @@ class Rankings extends Component {
           data={this.props.rankings}
           columns={columns}
           pageSize={Math.min(this.props.rankings.length,20)}
+          getTrProps={(state, rowInfo, column) => {
+            return {
+              style: {
+                'font-weight': rowInfo.row.selected ? 'bold' : 'normal'
+              }
+            }
+          }}
         />
       </div>
     );
