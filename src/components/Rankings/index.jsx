@@ -58,7 +58,7 @@ class Rankings extends Component {
         accessor: 'victims', 
         Cell: props => this.victimsFunction(props),
         style: {
-          'justify-content': 'left',
+          justifyContent: 'left',
           'padding': '20px'
         }
       },{
@@ -78,7 +78,7 @@ class Rankings extends Component {
           getTrProps={(state, rowInfo, column) => {
             return {
               style: {
-                'font-weight': rowInfo.row.selected ? 'bold' : 'normal'
+                fontWeight: rowInfo.row.selected ? 'bold' : 'normal'
               }
             }
           }}
