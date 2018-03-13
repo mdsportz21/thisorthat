@@ -1,10 +1,21 @@
-run:
-1. Run react server (start_TOT_react)
-2. Run http server (start_TOT_rest_python_server)
+run:  
+1. Run front end react server (start_TOT_react)  
+2. Run back end http server (start_TOT_rest_python_server)  
+  
+Install  
+1. npm install rc-progress  
+2. yarn add react-tournament-bracket  
+  
+Sources:  
+  1. https://github.com/goatslacker/alt  
+  1. https://react-table.js.org/#/story/readme  
+  1. https://github.com/moodysalem/react-tournament-bracket  
+  1. https://stackoverflow.com/questions/31234500/create-react-component-dynamically - Creating react components dynamically 
 
-Install
-1. npm install rc-progress
 
-Sources:
-1. https://github.com/goatslacker/alt
-1. https://react-table.js.org/#/story/readme
+  Documentation  
+  1. https://code.google.com/archive/p/jsdoc-toolkit/wikis/TagParam.wiki
+
+  Todo
+  1. https://www.kirupa.com/react/creating_single_page_app_react_using_react_router.htm
+  2. https://flow.org/en/docs/install/

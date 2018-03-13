@@ -15,16 +15,16 @@ class Rankings extends Component {
   victimsFunction(props) {
     // return (<span>{props.value}</span>);
     const listItems = props.value.map((victimId) => (
-      <li key={victimId}>{this.getDescription(victimId)}</li>
+      <li key={victimId}>{this.getName(victimId)}</li>
     ));
-    // const listItemsSubset = listItems.slice(0, 4);
-    const ellipses = ''; // listItemsSubset.length < listItems.length ? '...' : '';
-    return <span className="victims">{listItems}{ellipses}</span>;
+    const listItemsSubset = listItems.slice(0, 4);
+    const ellipses = listItemsSubset.length < listItems.length ? '...' : '';
+    return <span className="victims">{listItemsSubset}{ellipses}</span>;
   }
 
-  getDescription(subjectId) {
+  getName(subjectId) {
     const subject = this.RankingsStore.getSubjectById(subjectId);
-    return subject.description;
+    return subject.name;
   }
 
   render() {
@@ -38,8 +38,8 @@ class Rankings extends Component {
         Cell: props => <span><img className="imgLink" src={props.value} alt=""/></span>,
         maxWidth: 85
       },{
-        Header: 'Description',
-        accessor: 'description'
+        Header: 'Name',
+        accessor: 'name'
       },{
         Header: 'Wins',
         accessor: 'wins',
@@ -76,12 +76,22 @@ class Rankings extends Component {
           columns={columns}
           pageSize={Math.min(this.props.rankings.length,20)}
           getTrProps={(state, rowInfo, column) => {
-            return {
-              style: {
-                fontWeight: rowInfo.row.selected ? 'bold' : 'normal'
-              }
+            if (rowInfo) {
+              return {
+                style: {
+                  fontWeight: rowInfo.row.selected ? 'bold' : 'normal'
+                }
+              };
             }
           }}
+          sortable={false}
+          sorted={[{
+            id: 'selected',
+            desc: true
+          },{
+            id: 'rank',
+            desc: false
+          }]}
         />
       </div>
     );
@@ -91,14 +101,14 @@ class Rankings extends Component {
 Rankings.propTypes = {
   rank: PropTypes.number,
   imgLink: PropTypes.string,
-  description: PropTypes.string,
+  name: PropTypes.string,
   victims: PropTypes.array
 };
 
 Rankings.defaultProps = {
   rank: 999999,
   imgLink: '',
-  description: '',
+  name: '',
   victims: []
 };
 

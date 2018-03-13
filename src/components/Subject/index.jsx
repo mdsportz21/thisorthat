@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Subject.css';
 import PropTypes from 'prop-types'; //1
+import Image from 'react-image-resizer';
 
 class Subject extends Component {
 
@@ -16,8 +17,14 @@ class Subject extends Component {
   render() {
     return (
       <div onClick={this.handleClick}>
-        <img className="Subject" src={this.props.imgLink} alt={this.props.altText}/>
-        <p>{this.props.description}</p>
+        <Image 
+          src={this.props.imgLink} 
+          alt={this.props.altText}
+          className="Subject"
+          width={200}
+          height={200}
+        />
+        <p>{this.props.name}</p>
       </div>
     );
   }
@@ -27,17 +34,17 @@ Subject.propTypes = {
   onClick: PropTypes.func,
   imgLink: PropTypes.string,
   altText: PropTypes.string,
-  description: PropTypes.string,
+  name: PropTypes.string,
   subjectId: PropTypes.string
 };
 
-Subject.defaultProps = { //2
+Subject.defaultProps = { // 2
   onClick: function(value) {
     console.log(value);
   },
   imgLink: '',
   altText: '',
-  description: ''
+  name: ''
 };
 
 export default Subject;

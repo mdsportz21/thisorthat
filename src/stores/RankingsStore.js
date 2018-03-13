@@ -51,23 +51,6 @@ class RankingsStore {
       }
     });
 
-    rankings.sort(function(a,b) {
-
-      if ((a.selected && b.selected) || (!a.selected && !b.selected)) {
-        return a.rank - b.rank;
-      }
-
-      if (a.selected) {
-        return -1;
-      }
-
-      if (b.selected) {
-        return 1;
-      }
-
-      return 0;
-    });
-
     return rankings;
   }
 
