@@ -6,14 +6,106 @@ import Subject from './components/Subject';
 
 import {BracketGame, Bracket} from 'react-tournament-bracket';
 
+import BracketUtils from './utils/BracketUtils';
+
 class App extends PureComponent {
+
+  // Backend Types
+
+  /**
+   * A bracket wrapper
+   * @typedef {Object} BracketWrapper
+   * @property {Bracket} bracket
+   * @property {Team[]} teams
+   */
+
+  /**
+   * A bracket
+   * @typedef {Object} Bracket
+   * @property {Round[]} rounds
+   * @property {string} name
+   * @property {string} id - not there yet but it should be. we'll need to get and save brackets. for now, we'll use the name.
+   */
+
+  /**
+   * A round
+   * @typedef {Object} Round
+   * @property {Matchup[]} matchups
+   */
+
+  /**
+   * A matchup.
+   * @typedef {Object} Matchup
+   * @property {string} matchupId
+   * @property {string} sourceMatchupTwoId
+   * @property {string} sourceMatchupOneId
+   * @property {string} slotOneId
+   * @property {string} slotTwoId
+   * @property {string} winnerSlotId - winner
+   * @property {string} region
+   */
+
+  /**
+   * A team
+   * @typedef {Object} Team
+   * @property {string} name
+   * @property {string} imgLink
+   * @property {string} slotId
+   * @property {string} seed
+   */
+
+  // React Tournament Bracket Types (Frontend Types)
+
+  /**
+   * A Team
+   * @typedef {Object} TournamentTeam
+   * @property {string} id
+   * @property {string} name
+   */
+
+  /**
+   * A Score
+   * @typedef {Object} TournamentScore
+   * @property {number} score
+   */
+
+  /**
+   * A Game. Brackets are built from the finals to the first round, recursively, using gameObject.sides.visitor|home.seed.sourceGame.
+   * @typedef {Object} TournamentGame
+   * @property {string} id
+   * @property {string} name
+   * @property {SidesObject} sides
+   */
+
+  /**
+   * A Seed
+   * @typedef {Object} TournamentSeed
+   * @property {TournamentGame} sourceGame
+   * @property {number} rank
+   * @property {string} displayName
+   */
+
+  /**
+   * A Side
+   * @typedef {Object} TournamentSide
+   * @property {TournamentTeam} team
+   * @property {TournamentScore} score
+   * @property {TournamentSeed} seed
+   */
+
+  /**
+   * Sides
+   * @typedef {Object} TournamentSides
+   * @property {TournamentSide} visitor
+   * @property {TournamentSide} home
+   */
 
   state = {
     homeOnTop: false,
     hoveredTeamId: null
   };
 
-  changeHoveredTeamId = hoveredTeamId => this.setState({ hoveredTeamId });
+  // changeHoveredTeamId = hoveredTeamId => this.setState({ hoveredTeamId });
 
 //   handleClick = game => alert('clicked game: ' + game.name);
 
@@ -39,323 +131,103 @@ class App extends PureComponent {
     );
   };
 
-// TODO: update this bracket structure to the new one
-//   TEST_BRACKET = {}
-
-  // Svc Types
-
-  /**
-   * A bracket
-   * @typedef {Object} Bracket
-   * @property {Round[]} rounds
-   * @property {string} name
-   * @property {string} id
-   */
-
-  /**
-   * A bracket
-   * @typedef {Object} Bracket
-   * @property {Round[]} rounds
-   * @property {string} name
-   * @property {string} id
-   */
-
-  /**
-   * A round
-   * @typedef {Object} Round
-   * @property {Matchup[]} matchups
-   */
-
-  /**
-   * A matchup.
-   * @typedef {Object} Matchup
-   * @property {Slot} slotOne - First slot in a matchup
-   * @property {Slot} slotTwo - Second slot in a matchup
-   * @property {Slot} winner - Winner of the matchup. Either slotOne or slotTwo, or null if the matchup hasn't happened.
-   */
-
-  /**
-   * A slot
-   * @typedef {Object} Slot
-   * @property {number} seed - Region ranking as of the start of the tournament
-   * @property {Team} team - Team info
-   */
-
-  /**
-   * A team
-   * @typedef {Object} Team
-   * @property {string} name
-   * @property {string} imgLink
-   */
-
-  // React Tournament Bracket Types
-
-  /**
-   * A Team
-   * @typedef {Object} TeamObject
-   * @property {string} id
-   * @property {string} name
-   */
-
-  /**
-   * A Score
-   * @typedef {Object} ScoreObject
-   * @property {number} score
-   */
-
-  /**
-   * A Seed
-   * @typedef {Object} SeedObject
-   * @property {GameObject} sourceGame
-   * @property {number} rank
-   * @property {string} displayName
-   */
-
-  /**
-   * A Side
-   * @typedef {Object} SideObject
-   * @property {TeamObject} team
-   * @property {ScoreObject} score
-   * @property {SeedObject} seed
-   */
-
-  /**
-   * Sides
-   * @typedef {Object} SidesObject
-   * @property {SideObject} visitor
-   * @property {SideObject} home
-   */
-
-  /**
-   * A Game. Brackets are built from the finals to the first round, recursively, using gameObject.sides.visitor|home.seed.sourceGame.
-   * @typedef {Object} GameObject
-   * @property {string} id
-   * @property {string} name
-   * @property {SidesObject} sides
-   */
-
-   /**
-    * Convert svc rounds to react sides, recursively
-    * @param {Round[]} rounds
-    * @returns {SidesObject} sides
-    */
-  getSides(rounds) {
-    /** @type {SidesObject} */
-    const sidesObject = {};
-
-    const roundObject = rounds.splice(-1,1)[0];
-
-    /** @type {SideObject} */
-    const visitorSide = {
-      score: roundObject
-    };
-
-    /** @type {SideObject} */
-    const homeSide = {
-
-    };
-
-    //  return sidesObject;
-    return {
-      "visitor": visitorSide,
-      "home": homeSide
-    }
-  }
-
-  /**
-   * Convert svc bracket to react recursive round
-   * @param {Bracket} bracket
-   * @returns {GameObject} The finals, in the format of ReactTournamentBracket's BracketGame, containing nested games.
-   */
-  toGameObject(bracket) {
-    const bracketId = bracket.id;
-    const bracketName = bracket.name;
-    const bracketRounds = bracket.rounds;
-
-    const gameObject = {
-      "id": "whatevs",
-      "name": "finals",
-      "sides": this.getSides(bracket)
-    };
-
-    return gameObject;
-  }
-
   render() {
     const { homeOnTop, hoveredTeamId } = this.state;
     const { gameComponent: GameComponent } = this;
 
-    // const gameObject = this.toGameObject(this.TEST_BRACKET);
+    console.log(BracketUtils.getGameName(0,0));
 
-    const visitorSide0A = {
-      "team": {
-        "id": "7 G",
-        "name": "7 G"
+    /** @type {BracketWrapper} */
+    const bracketWrapper = {
+      "bracket" : {
+         "rounds" : [
+            {
+               "matchups" : [
+                  {
+                     "winnerSlotId" : "None",
+                     "matchupId" : "5a66941dd6f45f0caab3d280",
+                     "slotTwoId" : "5a66941d00a50bae299dd9aa",
+                     "sourceMatchupTwoId" : "None",
+                     "sourceMatchupOneId" : "None",
+                     "slotOneId" : "5a66941d00a50bae299dd9a4",
+                     "region" : null
+                  },
+                  {
+                     "winnerSlotId" : "None",
+                     "matchupId" : "5a66941dd6f45f0caab3d281",
+                     "region" : null,
+                     "slotOneId" : "5a66941d00a50bae299dd9a6",
+                     "sourceMatchupOneId" : "None",
+                     "sourceMatchupTwoId" : "None",
+                     "slotTwoId" : "5a66941d00a50bae299dd9a8"
+                  }
+               ]
+            },
+            {
+               "matchups" : [
+                  {
+                     "winnerSlotId" : "None",
+                     "matchupId" : "5a66941dd6f45f0caab3d282",
+                     "sourceMatchupTwoId" : "5a66941dd6f45f0caab3d281",
+                     "slotTwoId" : "None",
+                     "region" : null,
+                     "slotOneId" : "None",
+                     "sourceMatchupOneId" : "5a66941dd6f45f0caab3d280"
+                  }
+               ]
+            }
+         ],
+         "name" : "final_four"
       },
-      "score": {
-        "score": 0
-      },
-      "seed": {
-        "sourceGame": null,
-        "rank": 2,
-        "displayName": ""
-      }
-    };
-    const homeSideOA = {
-      "team": {
-        "id": "6 F",
-        "name": "6 F"
-      },
-      "score": {
-        "score": 1
-      },
-      "seed": {
-        "sourceGame": null,
-        "rank": 2,
-        "displayName": ""
-      }
-    };
-    const game0A = {
-      "id": "B1",
-      "name": "Round 0A",
-      "sides": {
-        "visitor": visitorSide0A,
-        "home": homeSideOA
-      }
-    };
-    const game0B = {
-      "id": "B2",
-      "name": "Round 0B",
-      "sides": {
-        "visitor": {
-          "team": {
-            "id": "8 H",
-            "name": "8 H"
-          },
-          "score": null,
-          "seed": {
-            "sourceGame": null,
-            "rank": 2,
-            "displayName": ""
-          }
-        },
-        "home": {
-          "team": {
-            "id": "5 E",
-            "name": "5 E"
-          },
-          "score": null,
-          "seed": {
-            "sourceGame": null,
-            "rank": 2,
-            "displayName": ""
-          }
-        }
-      }
-    };
-    const game1A = {
-      "id": "B3",
-      "name": "Round 1A",
-      "sides": {
-        "visitor": {
-          "team": {
-            "id": "6 F",
-            "name": "6 F"
-          },
-          "score": null,
-          "seed": {
-            "sourceGame": game0A,
-            "rank": 1,
-            "displayName": ""
-          }
-        },
-        "home": {
-          "team": {
-            "id": "1 A",
-            "name": "1 A"
-          },
-          "score": null,
-          "seed": {
-            "sourceGame": null,
-            "rank": 1,
-            "displayName": ""
-          }
-        }
-      }
-    };
-    const game1B = {
-      "id": "B4",
-      "name": "Round 1B",
-      "sides": {
-        "visitor": {
-          "team": null,
-          "score": null,
-          "seed": {
-            "sourceGame": game0B,
-            "rank": 1,
-            "displayName": ""
-          }
-        },
-        "home": {
-          "team": {
-            "id": "2 B",
-            "name": "2 B"
-          },
-          "score": null,
-          "seed": {
-            "sourceGame": null,
-            "rank": 1,
-            "displayName": ""
-          }
-        }
-      }
-    };    
-    
-    const finals = {
-      "id": "B5",
-      "name": "Round 2",
-      "sides": {
-        "visitor": {
-          "team": null,
-          "score": null,
-          "seed": {
-            "sourceGame": game1B,
-            "rank": 1,
-            "displayName": ""
-          }
-        },
-        "home": {
-          "team": null,
-          "score": null,
-          "seed": {
-            "sourceGame": game1A,
-            "rank": 1,
-            "displayName": ""
-          }
-        }
-      }
+      "teams" : [
+         {
+            "slotId" : "5a66941d00a50bae299dd9a4",
+            "name" : "Aberdeen Ironbirds",
+            "seed" : "1",
+            "imgLink" : "http://images.footballfanatics.com/FFImage/thumb.aspx?i=/productImages/_2280000/ff_2280914_full.jpg&w=600"
+         },
+         {
+            "name" : "Aberdeen Steamed Crabs",
+            "seed" : "2",
+            "imgLink" : "http://images.footballfanatics.com/FFImage/thumb.aspx?i=/productImages/_2808000/ff_2808206_full.jpg&w=600",
+            "slotId" : "5a66941d00a50bae299dd9a6"
+         },
+         {
+            "slotId" : "5a66941d00a50bae299dd9a8",
+            "imgLink" : "http://static1.squarespace.com/static/594061048419c282ed731d4a/59406864d482e90beeb42ec9/594c3fcb44024311bb70a1f2/1498169292727/thumb+%2815%29.jpeg",
+            "seed" : "3",
+            "name" : "Akron RubberDucks"
+         },
+         {
+            "name" : "Albuquerque Dukes",
+            "seed" : "4",
+            "imgLink" : "http://lf.lids.com/hwl?set=sku[20868220],c[2],w[400],h[300]&call=url[file:product]",
+            "slotId" : "5a66941d00a50bae299dd9aa"
+         }
+      ]
     };
 
-    // a game is made up of:
-    //  ID
-    //  name
-    //  sides
 
-    // brackets are built from the finals back
-    // sourceGame is used to define the previous round's games
+    /**
+     * Map of matchupId to TournamentGame. Should be populated as the games are created.
+     * 
+     * @ type {Object.<string, TournamentGame>}
+     */
+    const gamesByMatchupId = {};
+    /**
+     * We're gonna need this to fill out sides.
+     */
+    const teamsBySlotId = BracketUtils.getTeamsBySlotId(bracketWrapper.teams);
 
-    //let's always make the home == one and visitor == two
+    const rounds = bracketWrapper.bracket.rounds;
 
-    // so, to construct a bracket, i need to:
-    //  build a dictionary of slots by ID
-    //  build a dictionary of matchups by ID
-    //  find the finals matchup (last round) and transform to bracket game
-    //      id = whatever
-    //      name = round of {rounds[-1].matchups.size() * 2}
-    //      if there is another round before this
-    //          sides:
-    //              home
-    //          
+    rounds.forEach(function(round, roundIdx) {
+      BracketUtils.createGames(round, roundIdx, teamsBySlotId, gamesByMatchupId);
+    });
+
+    const finalsMatchupId = rounds[rounds.length - 1].matchups[0].matchupId;
+
+    const finals = gamesByMatchupId[finalsMatchupId];  
 
     const subjectOne = {
         "subjectId":"59756722fc278e3ec13c355a",
@@ -391,7 +263,9 @@ class App extends PureComponent {
         </div>
 
         {/* This is the test front end bracket */}
+        <div className="Bracket">
         {<Bracket game={finals} homeOnTop={homeOnTop} GameComponent={GameComponent}  />}
+        </div>
 
         {/* This is the converted bracket */}
         {/* <Bracket game={gameObject} homeOnTop={homeOnTop} GameComponent={GameComponent}  /> */}
