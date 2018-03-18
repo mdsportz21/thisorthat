@@ -1,4 +1,5 @@
 export default class {
+
   // Backend Types
 
   /**
@@ -63,7 +64,8 @@ export default class {
    * @typedef {Object} TournamentGame
    * @property {string} id
    * @property {string} name
-   * @property {SidesObject} sides
+   * @property {TournamentSides} sides
+   * @property {boolean} selected
    */
 
   /**
@@ -77,6 +79,7 @@ export default class {
   /**
    * A Side
    * @typedef {Object} TournamentSide
+   * @property {string} gameId
    * @property {TournamentTeam} team
    * @property {TournamentScore} score
    * @property {TournamentSeed} seed
@@ -107,8 +110,8 @@ export default class {
    * @param {Object.<string, Team>} teamsBySlotId
    * @returns {TournamentTeam} team
    */
-  static getTeam(slotId, teamsBySlotId) {
-    if (slotId == "None") {
+  static createTeam(slotId, teamsBySlotId) {
+    if (slotId === "None") {
       return null;
     }
     const team = teamsBySlotId[slotId];
@@ -120,32 +123,12 @@ export default class {
 
   /**
    * 
-   * @param {Matchup} matchup 
-   * @param {Object.<string, Team>} teamsBySlotId
-   * @returns {TournamentTeam}
-   */
-  static getVisitorTeam(matchup, teamsBySlotId) {
-    return this.getTeam(matchup.slotOneId, teamsBySlotId);
-  }
-
-  /**
-   * 
-   * @param {Matchup} matchup 
-   * @param {Object.<string, Team>} teamsBySlotId
-   * @returns {TournamentTeam}
-   */
-  static getHomeTeam(matchup, teamsBySlotId) {
-    return this.getTeam(matchup.slotTwoId, teamsBySlotId);
-  }
-
-  /**
-   * 
-   * @param {Matchup} matchup 
    * @param {string} slotId
+   * @param {string} winnerSlotId 
    * @returns {TournamentScore}
    */
-  static getScore(matchup, slotId) {
-    const score = matchup.winnerSlotId !== "None" && matchup.winnerSlotId === slotId ? 1 : 0;
+  static createScore(slotId, winnerSlotId) {
+    const score = winnerSlotId !== "None" && winnerSlotId === slotId ? 1 : 0;
     return {
       "score": score
     };
@@ -153,58 +136,16 @@ export default class {
 
   /**
    * 
-   * @param {Matchup} matchup 
-   * @returns {TournamentScore}
-   */
-  static getVisitorScore(matchup) {
-    return this.getScore(matchup, matchup.slotOneId);
-  }
-
-  /**
-   * 
-   * @param {Matchup} matchup 
-   * @returns {TournamentScore}
-   */
-  static getHomeScore(matchup) {
-    return this.getScore(matchup, matchup.slotTwoId);
-  }
-
-  /**
-   * 
-   * @param {string} slotId 
-   * @param {TournamentGame} sourceGame
-   * @param {Object.<string, Team>} teamsBySlotId
+   * @param {string} sourceMatchupId 
+   * @param {Object.<string, TournamentGame>} gamesByMatchupId
    * @returns {TournamentSeed}
    */
-  static getSeed(slotId, sourceGame, teamsBySlotId) {
-    const team = teamsBySlotId[slotId];
+  static createSeed(sourceMatchupId, gamesByMatchupId) {
     return {
-      "sourceGame": sourceGame,
+      "sourceGame": this.getSourceGame(sourceMatchupId, gamesByMatchupId),
       "rank": 1,
       "displayName": ""
     };
-  }
-
-  /**
-   * 
-   * @param {Matchup} matchup 
-   * @param {TournamentGame} sourceGame
-   * @param {Object.<string, Team>} teamsBySlotId
-   * @returns {TournamentSeed}
-   */
-  static getVisitorSeed(matchup, sourceGame, teamsBySlotId) {
-    return this.getSeed(matchup.slotOneId, sourceGame, teamsBySlotId);
-  }
-
-  /**
-   * 
-   * @param {Matchup} matchup 
-   * @param {TournamentGame} sourceGame
-   * @param {Object.<string, Team>} teamsBySlotId
-   * @returns {TournamentSeed}
-   */
-  static getHomeSeed(matchup, sourceGame, teamsBySlotId) {
-    return this.getSeed(matchup.slotTwoId, sourceGame, teamsBySlotId);
   }
 
   /**
@@ -223,53 +164,20 @@ export default class {
 
   /**
    * 
-   * @param {Matchup} matchup 
-   * @param {Object.<string, TournamentGame>} gamesByMatchupId
-   * @returns {TournamentGame}
-   */
-  static getVisitorSourceGame(matchup, gamesByMatchupId) {
-    return this.getSourceGame(matchup.sourceMatchupOneId, gamesByMatchupId);
-  }
-
-  /**
-   * 
-   * @param {Matchup} matchup 
-   * @param {Object.<string, TournamentGame>} gamesByMatchupId
-   * @returns {TournamentGame}
-   */
-  static getHomeSourceGame(matchup, gamesByMatchupId) {
-    return this.getSourceGame(matchup.sourceMatchupTwoId, gamesByMatchupId);
-  }
-
-  /**
-   * 
-   * @param {Matchup} matchup 
+   * @param {string} matchupId
+   * @param {string} slotId 
+   * @param {string} sourceMatchupId 
+   * @param {string} winnerSlotId 
    * @param {Object.<string, Team>} teamsBySlotId
    * @param {Object.<string, TournamentGame>} gamesByMatchupId
    * @returns {TournamentSide}
    */
-  static getVisitorSide(matchup, teamsBySlotId, gamesByMatchupId) {
-    const visitorSourceGame = this.getVisitorSourceGame(matchup, gamesByMatchupId);
+  static createSide(matchupId, slotId, sourceMatchupId, winnerSlotId, teamsBySlotId, gamesByMatchupId) {
     return {
-      "team": this.getVisitorTeam(matchup, teamsBySlotId),
-      "score": this.getVisitorScore(matchup),
-      "seed": this.getVisitorSeed(matchup, visitorSourceGame, teamsBySlotId)
-    };
-  }
-
-  /**
-   * 
-   * @param {Matchup} matchup 
-   * @param {Object.<string, Team>} teamsBySlotId
-   * @param {Object.<string, TournamentGame>} gamesByMatchupId
-   * @returns {TournamentSide}
-   */
-  static getHomeSide(matchup, teamsBySlotId, gamesByMatchupId) {
-    const homeSourceGame = this.getHomeSourceGame(matchup, gamesByMatchupId);
-    return {
-      "team": this.getHomeTeam(matchup, teamsBySlotId),
-      "score": this.getHomeScore(matchup),
-      "seed": this.getHomeSeed(matchup, homeSourceGame, teamsBySlotId)
+      "gameId": matchupId,
+      "team": this.createTeam(slotId, teamsBySlotId),
+      "score": this.createScore(slotId, winnerSlotId),
+      "seed": this.createSeed(sourceMatchupId, gamesByMatchupId)
     };
   }
 
@@ -279,7 +187,7 @@ export default class {
    * @param {number} matchupIdx 
    * @returns {string}
    */
-  static getGameName(roundIdx, matchupIdx) {
+  static createGameName(roundIdx, matchupIdx) {
     return "Game " + roundIdx + matchupIdx;
   }
 
@@ -290,10 +198,10 @@ export default class {
    * @param {Object.<string, TournamentGame>} gamesByMatchupId
    * @returns {TournamentSides}
    */
-  static getSides(matchup, teamsBySlotId, gamesByMatchupId) {
+  static createSides(matchup, teamsBySlotId, gamesByMatchupId) {
     return {
-      "visitor": this.getVisitorSide(matchup, teamsBySlotId, gamesByMatchupId),
-      "home": this.getHomeSide(matchup, teamsBySlotId, gamesByMatchupId)
+      "visitor": this.createSide(matchup.matchupId, matchup.slotOneId, matchup.sourceMatchupOneId, matchup.winnerSlotId, teamsBySlotId, gamesByMatchupId),
+      "home": this.createSide(matchup.matchupId, matchup.slotTwoId, matchup.sourceMatchupTwoId, matchup.winnerSlotId, teamsBySlotId, gamesByMatchupId)
     };
   }
 
@@ -320,8 +228,9 @@ export default class {
   static createGame(matchup, roundIdx, matchupIdx, teamsBySlotId, gamesByMatchupId) {
     return {
       "id": matchup.matchupId,
-      "name": this.getGameName(roundIdx, matchupIdx),
-      "sides": this.getSides(matchup, teamsBySlotId, gamesByMatchupId),
+      "name": this.createGameName(roundIdx, matchupIdx),
+      "sides": this.createSides(matchup, teamsBySlotId, gamesByMatchupId),
+      "selected": false
       // "scheduled": 0
     };
   }
