@@ -268,14 +268,21 @@ class App extends PureComponent {
     const finalsMatchupId = rounds[rounds.length - 1].matchups[0].matchupId;
 
     const finals = gamesByMatchupId[finalsMatchupId];
-    const firstUnfilledGame = this.getFirstUnfilledGame(finals);
+    let firstUnfilledGame = this.getFirstUnfilledGame(finals);
 
-    if (firstUnfilledGame != null) {
-      firstUnfilledGame.selected = true;
+    if (firstUnfilledGame == null) {
+      firstUnfilledGame = finals;
     }
+
+    firstUnfilledGame.selected = true;
     
     this.state = {
-      finals: finals
+      finals: finals,
+      teamsBySlotId: teamsBySlotId,
+      sideOne: firstUnfilledGame.sides.home,
+      sideTwo: firstUnfilledGame.sides.visitor,
+      teamOne: teamsBySlotId[firstUnfilledGame.sides.home.team.id],
+      teamTwo: teamsBySlotId[firstUnfilledGame.sides.visitor.team.id]
     }
   }
 
@@ -293,8 +300,31 @@ class App extends PureComponent {
 
     if (side.team != null) {
       const updatedFinals = this.state.finals;
+      let sideOne = this.state.sideOne;
+      let sideTwo = this.state.sideTwo;
+      let teamOne = this.state.teamOne;
+      let teamTwo = this.state.teamTwo;
+
       const finalsWinner = this.setWinner(updatedFinals, side.gameId, side.team.id, null);
-      this.setState(() => updatedFinals);
+
+      const firstUnfilledGame = this.getFirstUnfilledGame(updatedFinals);
+      if (firstUnfilledGame != null) {
+        this.selectGame(updatedFinals, firstUnfilledGame.id);
+        sideOne = firstUnfilledGame.sides.home;
+        sideTwo = firstUnfilledGame.sides.visitor;
+        teamOne = sideOne.team != null ? this.state.teamsBySlotId[sideOne.team.id] : {};
+        teamTwo = sideTwo.team != null ? this.state.teamsBySlotId[sideTwo.team.id] : {};
+      }
+
+      this.setState(() => {
+        return {
+          finals: updatedFinals,
+          sideOne,
+          sideTwo,
+          teamOne,
+          teamTwo
+        };
+      });
       
       if (finalsWinner != null) {
         // TODO: display champion
@@ -312,8 +342,21 @@ class App extends PureComponent {
   handleGameMouseEnter(game) {
     //TODO: set subjects to this game's teams
     const updatedFinals = this.state.finals;
-    this.selectGame(updatedFinals, game.id);
-    this.setState(() => updatedFinals);
+    const selectedGame = this.selectGame(updatedFinals, game.id);
+    const sideOne = selectedGame.sides.home;
+    const sideTwo = selectedGame.sides.visitor;
+    const teamOne = sideOne.team != null ? this.state.teamsBySlotId[sideOne.team.id] : {};
+    const teamTwo = sideTwo.team != null ? this.state.teamsBySlotId[sideTwo.team.id] : {};
+
+    this.setState(() => {
+      return {
+        finals: updatedFinals,
+        sideOne,
+        sideTwo,
+        teamOne,
+        teamTwo
+      };
+    });
   }
 
   /**
@@ -405,12 +448,18 @@ class App extends PureComponent {
     if (homeSourceGame != null) {
       bracketResult = this.setWinner(homeSourceGame, gameId, winningTeamId, root.id);
       if (bracketResult != null) {
-        if (bracketResult.parentId === root.id) {
-          homeSide.team = bracketResult.winningTeam;
+        if (bracketResult.parentId === root.id ) {
+          if (homeSide.team === null || homeSide.team.id !== bracketResult.winningTeam.id) {
+            homeSide.team = bracketResult.winningTeam;
+            homeSide.score.score = 0
+            visitorSide.score.score = 0;
+          }
         } else if (homeSide.team != null && homeSide.team.id === bracketResult.losingTeam.id) {
           homeSide.team = null;
+          homeSide.score.score = 0;
         } else if (visitorSide.team != null && visitorSide.team.id === bracketResult.losingTeam.id) {
           visitorSide.team = null;
+          visitorSide.score.score = 0;
         }
 
         return bracketResult;
@@ -421,11 +470,17 @@ class App extends PureComponent {
       bracketResult = this.setWinner(visitorSourceGame, gameId, winningTeamId, root.id);
       if (bracketResult != null) {
         if (bracketResult.parentId === root.id) {
-          visitorSide.team = bracketResult.winningTeam;
+          if (visitorSide.team === null || visitorSide.team.id !== bracketResult.winningTeam.id) {
+            visitorSide.team = bracketResult.winningTeam;
+            visitorSide.score.score = 0;
+            homeSide.score.score = 0;
+          }
         } else if (homeSide.team != null && homeSide.team.id === bracketResult.losingTeam.id) {
           homeSide.team = null;
+          homeSide.score.score = 0;
         } else if (visitorSide.team != null && visitorSide.team.id === bracketResult.losingTeam.id) {
           visitorSide.team = null;
+          visitorSide.score.score = 0;
         }
       }
 
@@ -440,23 +495,34 @@ class App extends PureComponent {
    * @param {TournamentGame} game 
    * @param {string} gameId 
    * @param {boolean} toSelect
+   * @returns {TournamentGame} selected game
    */
   selectGame(game, gameId) {
+    let selectedGame = null;
     if (game.id === gameId) {
       game.selected = true;
+      selectedGame = game;
     } else {
       game.selected = false;
     }
     
     const homeSourceGame = game.sides.home.seed.sourceGame;
     if (homeSourceGame != null) {
-      this.selectGame(homeSourceGame, gameId);
+      const homeSelectedGame = this.selectGame(homeSourceGame, gameId);
+      if (homeSelectedGame != null) {
+        selectedGame = homeSelectedGame;
+      }
     }
 
     const visitorSourceGame = game.sides.visitor.seed.sourceGame;
     if (visitorSourceGame != null) {
-      this.selectGame(visitorSourceGame, gameId);
+      const visitorSelectedGame = this.selectGame(visitorSourceGame, gameId);
+      if (visitorSelectedGame != null) {
+        selectedGame = visitorSelectedGame;
+      }
     }
+
+    return selectedGame;
   }
 
   gameComponent = props => {
@@ -471,16 +537,16 @@ class App extends PureComponent {
   };
 
   render() {
-    const { homeOnTop } = this.state;
+    const { homeOnTop, sideOne, sideTwo, teamOne, teamTwo } = this.state;
     const { gameComponent: GameComponent } = this; 
 
-    const subjectOne = {
-        "subjectId":"59756722fc278e3ec13c355a",
-        "imgLink":"https://static1.squarespace.com/static/594061048419c282ed731d4a/5949b25b86e6c05c7d5cf26d/5949b27f6b8f5bfb66cee7e1/1498002048239/thumb+%2814%29.jpeg",
-        "imgDesc":"Charleston RiverDogs",
-        "description":"Charleston RiverDogs"
-    };
-    const subjectTwo = subjectOne;
+    // const subjectOne = {
+    //     "subjectId":"59756722fc278e3ec13c355a",
+    //     "imgLink":"https://static1.squarespace.com/static/594061048419c282ed731d4a/5949b25b86e6c05c7d5cf26d/5949b27f6b8f5bfb66cee7e1/1498002048239/thumb+%2814%29.jpeg",
+    //     "imgDesc":"Charleston RiverDogs",
+    //     "description":"Charleston RiverDogs"
+    // };
+    // const subjectTwo = subjectOne;
 
     return (
       <div className="App">
@@ -491,29 +557,21 @@ class App extends PureComponent {
 
         <div className="Subjects">
             <Subject 
-              subjectId={subjectOne.subjectId}
-              imgLink={subjectOne.imgLink} 
-              altText={subjectOne.imgDesc}
-              description={subjectOne.description}
-              onClick={(e) => this.onClick(e)}
+              side={sideOne}
+              team={teamOne}
+              onClick={() => this.onSideClick(sideOne)}
               />
             <h3 className="Or">or</h3>
             <Subject 
-              subjectId={subjectTwo.subjectId}
-              imgLink={subjectTwo.imgLink}
-              altText={subjectTwo.imgDesc}
-              description={subjectTwo.description}
+              side={sideTwo}
+              team={teamTwo}
               onClick={(e) => this.onClick(e)}
               />
         </div>
 
-        {/* This is the test front end bracket */}
         <div className="Bracket">
         {<Bracket game={this.state.finals} homeOnTop={homeOnTop} GameComponent={GameComponent}  />}
         </div>
-
-        {/* This is the converted bracket */}
-        {/* <Bracket game={gameObject} homeOnTop={homeOnTop} GameComponent={GameComponent}  /> */}
       </div>
     );
   }

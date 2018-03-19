@@ -9,7 +9,7 @@ Install
 Dependencies
 https://github.com/mdsportz21/react-tournament-bracket.git
   
-Local Bracket
+Local Bracket  
 0. git clone https://github.com/mdsportz21/react-tournament-bracket.git
 1. npm link
 2. npx babel src --out-dir lib

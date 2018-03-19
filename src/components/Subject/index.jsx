@@ -11,20 +11,20 @@ class Subject extends Component {
   }
 
   handleClick(e) {
-    this.props.onClick(this.props.subjectId); //3
+    this.props.onClick(this.props.side); //3
   }
 
   render() {
     return (
       <div onClick={this.handleClick}>
         <Image 
-          src={this.props.imgLink} 
-          alt={this.props.altText}
+          src={this.props.team.imgLink} 
+          alt={this.props.team.name}
           className="Subject"
           width={200}
           height={200}
         />
-        <p>{this.props.name}</p>
+        <p>{this.props.team.name}</p>
       </div>
     );
   }
@@ -32,19 +32,14 @@ class Subject extends Component {
 
 Subject.propTypes = {
   onClick: PropTypes.func,
-  imgLink: PropTypes.string,
-  altText: PropTypes.string,
-  name: PropTypes.string,
-  subjectId: PropTypes.string
+  side: PropTypes.object,
+  team: PropTypes.object
 };
 
 Subject.defaultProps = { // 2
   onClick: function(value) {
     console.log(value);
-  },
-  imgLink: '',
-  altText: '',
-  name: ''
+  }
 };
 
 export default Subject;
