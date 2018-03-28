@@ -44,6 +44,19 @@ export default class {
    * @property {string} seed
    */
 
+  /**
+  * Bracket Results
+  * @typedef {Object} BracketResults
+  * @property {BracketResult[]} results
+  */
+
+  /**
+   * Bracket Result
+   * @typedef {Object} BracketResult
+   * @property {string} matchupId
+   * @property {string} winnerSlotId
+   */
+
   // React Tournament Bracket Types (Frontend Types)
 
   /**
@@ -91,6 +104,8 @@ export default class {
    * @property {TournamentSide} visitor
    * @property {TournamentSide} home
    */
+
+// To React Bracket
 
   /**
    * 
@@ -249,6 +264,275 @@ export default class {
       gamesByMatchupId[matchup.matchupId] = game;
       return game;
     }, this);
+  }
+
+  // To Persistence
+
+  /**
+   * 
+   * @param {TournamentGame} finals 
+   * @param {number} invRound
+   * @param {}
+   * @returns {Bracket}
+   */
+  static toPersistence(finals, invRound) {
+  }
+
+  // Utilities
+
+  /**
+   * And unselect other games
+   * @param {TournamentGame} game 
+   * @param {string} gameId 
+   * @param {boolean} toSelect
+   * @returns {TournamentGame} selected game
+   */
+  static selectGame(game, gameId) {
+    let selectedGame = null;
+    if (game.id === gameId) {
+      game.selected = true;
+      selectedGame = game;
+    } else {
+      game.selected = false;
+    }
+    
+    const homeSourceGame = game.sides.home.seed.sourceGame;
+    if (homeSourceGame != null) {
+      const homeSelectedGame = this.selectGame(homeSourceGame, gameId);
+      if (homeSelectedGame != null) {
+        selectedGame = homeSelectedGame;
+      }
+    }
+
+    const visitorSourceGame = game.sides.visitor.seed.sourceGame;
+    if (visitorSourceGame != null) {
+      const visitorSelectedGame = this.selectGame(visitorSourceGame, gameId);
+      if (visitorSelectedGame != null) {
+        selectedGame = visitorSelectedGame;
+      }
+    }
+
+    return selectedGame;
+  }
+
+  /**
+   * 
+   * @param {Round[]} rounds 
+   * @param {Object.<string, TournamentTeam>} teamsBySlotId 
+   * @returns {TournamentGame}
+   */
+  static getFinals(rounds, teamsBySlotId) {
+    const gamesByMatchupId = this.getGamesByMatchupId(rounds, teamsBySlotId);
+    const finalsMatchupId = rounds[rounds.length - 1].matchups[0].matchupId;
+    return gamesByMatchupId[finalsMatchupId];
+  }
+
+  /**
+   * 
+   * @param {TournamentGame} finals 
+   * @returns {TournamentGame}
+   */
+  static selectDefaultGame(finals) {
+    let firstUnfilledGame = this.getFirstUnfilledGame(finals);
+    if (firstUnfilledGame == null) {
+      firstUnfilledGame = finals;
+    }
+    
+    firstUnfilledGame.selected = true;
+
+    return firstUnfilledGame;
+  }
+
+  /**
+   * 
+   * @param {TournamentGame} game 
+   * @returns {TournamentGame}
+   */
+  static getFirstUnfilledGame(game) {
+    let unfilledGame = null;
+    const homeSide = game.sides.home;
+    const visitorSide = game.sides.visitor;
+    const winningSide = this.getWinningSide(game);
+    if (winningSide === null) {
+      unfilledGame = game;
+    }
+
+    const homeSourceGame = homeSide.seed.sourceGame;
+    if (homeSourceGame != null) {
+      const unfilledGameFromHomeSource = this.getFirstUnfilledGame(homeSourceGame);
+      if (unfilledGameFromHomeSource != null) {
+        unfilledGame = unfilledGameFromHomeSource;
+      }
+    }
+
+    const visitorSourceGame = visitorSide.seed.sourceGame;
+    if (visitorSourceGame != null) {
+      const unfilledGameFromVisitorSource = this.getFirstUnfilledGame(visitorSourceGame);
+      if (unfilledGameFromVisitorSource != null) {
+        unfilledGame = unfilledGameFromVisitorSource;
+      }
+    }
+
+    return unfilledGame;
+  }
+
+  /**
+   * Returns winning team, or null if tied
+   * @param {TournamentGame} game  
+   * @returns {TournamentSide}
+   */
+  static getWinningSide(game) {
+    const sideOne = game.sides.home;
+    const sideTwo = game.sides.visitor;
+    if (sideOne.score.score === sideTwo.score.score) {
+      return null
+    }
+
+    return sideOne.score.score > sideTwo.score.score ? sideOne : sideTwo;
+  }
+
+  /**
+   * Map of matchupId to TournamentGame. Should be populated as the games are created.
+   * @param {Round[]} rounds 
+   * @param {Object.<string, TournamentTeam>} teamsBySlotId 
+   * @returns {Object.<string, TournamentGame>}
+   */
+  static getGamesByMatchupId(rounds, teamsBySlotId) {
+    const gamesByMatchupId = {};
+
+    rounds.forEach((round, roundIdx) => {
+      this.createGames(round, roundIdx, teamsBySlotId, gamesByMatchupId);
+    });
+
+    return gamesByMatchupId;
+  }
+  
+  /**
+   * Get results from bracket
+   * @param {TournamentGame} root
+   * @returns {BracketResults} list of bracket results
+   */
+  static collectResults(root) {
+    const winnerSlotIdByMatchupId = this.getResults(root, {});
+    const results = Object.entries(winnerSlotIdByMatchupId).map(([matchupId, winnerSlotId]) => {
+      return {
+        "matchupId": matchupId,
+        "winnerSlotId": winnerSlotId
+      };
+    });
+
+    return {
+      results
+    };
+  }
+
+  /**
+   * Recursively search the tree to populate winners
+   * @param {TournamentGame} root
+   * @param {Object.<string, string>} winnerSlotIdByMatchupId
+   * @returns {Object.<string, string>} map of matchup to slot 
+   */
+  static getResults(root, winnerSlotIdByMatchupId) {
+    const winningSide = this.getWinningSide(root);
+    if (winningSide != null) {
+      winnerSlotIdByMatchupId[root.id] = winningSide.team.id;
+    }
+
+    const homeSourceGame = root.sides.home.seed.sourceGame;
+    if (homeSourceGame != null) {
+      this.getResults(homeSourceGame, winnerSlotIdByMatchupId);
+    }
+
+    const visitorSourceGame = root.sides.visitor.seed.sourceGame;
+    if (visitorSourceGame != null) {
+      this.getResults(visitorSourceGame, winnerSlotIdByMatchupId);
+    }
+
+    return winnerSlotIdByMatchupId;
+  }
+
+  /**
+   * Recursively search the tree for the game with gameId. Once found, set the winner, and clear out the loser from any parent nodes.
+   * @param {TournamentGame} root The game from which to start the search. from the root, traverse towards the first round.
+   * @param {string} gameId ID of the game to set the winner on
+   * @param {string} winningTeamId winner of the game
+   * @param {string} parentId ID of the game that the winner plays in next
+   * @returns {GameResult} winning and losing team of the game in question. passed up to the root from whichever game it was set. null if the game was not found in the bracket.
+   */
+  static setWinner(root, gameId, winningTeamId, parentId) {
+    if (root.id === gameId) {
+      let gameWinningTeam;
+      let gameLosingTeam; 
+
+      if (root.sides.home.team.id === winningTeamId) {
+        root.sides.home.score.score = 1;
+        root.sides.visitor.score.score = 0;
+        gameWinningTeam = root.sides.home.team;
+        gameLosingTeam = root.sides.visitor.team;
+      } else {
+        root.sides.home.score.score = 0;
+        root.sides.visitor.score.score = 1;
+        gameWinningTeam = root.sides.visitor.team;
+        gameLosingTeam = root.sides.home.team;
+      }
+
+      return {
+        parentId: parentId,
+        winningTeam: gameWinningTeam,
+        losingTeam: gameLosingTeam
+      };
+    }
+    
+    let bracketResult;
+
+    const homeSide = root.sides.home;
+    const homeSourceGame = homeSide.seed.sourceGame;
+    const visitorSide = root.sides.visitor;
+    const visitorSourceGame = visitorSide.seed.sourceGame;
+
+    if (homeSourceGame != null) {
+      bracketResult = this.setWinner(homeSourceGame, gameId, winningTeamId, root.id);
+      if (bracketResult != null) {
+        if (bracketResult.parentId === root.id ) {
+          if (homeSide.team === null || homeSide.team.id !== bracketResult.winningTeam.id) {
+            homeSide.team = bracketResult.winningTeam;
+            homeSide.score.score = 0
+            visitorSide.score.score = 0;
+          }
+        } else if (homeSide.team != null && homeSide.team.id === bracketResult.losingTeam.id) {
+          homeSide.team = null;
+          homeSide.score.score = 0;
+        } else if (visitorSide.team != null && visitorSide.team.id === bracketResult.losingTeam.id) {
+          visitorSide.team = null;
+          visitorSide.score.score = 0;
+        }
+
+        return bracketResult;
+      }
+    }
+
+    if (visitorSourceGame != null) {
+      bracketResult = this.setWinner(visitorSourceGame, gameId, winningTeamId, root.id);
+      if (bracketResult != null) {
+        if (bracketResult.parentId === root.id) {
+          if (visitorSide.team === null || visitorSide.team.id !== bracketResult.winningTeam.id) {
+            visitorSide.team = bracketResult.winningTeam;
+            visitorSide.score.score = 0;
+            homeSide.score.score = 0;
+          }
+        } else if (homeSide.team != null && homeSide.team.id === bracketResult.losingTeam.id) {
+          homeSide.team = null;
+          homeSide.score.score = 0;
+        } else if (visitorSide.team != null && visitorSide.team.id === bracketResult.losingTeam.id) {
+          visitorSide.team = null;
+          visitorSide.score.score = 0;
+        }
+      }
+
+      return bracketResult;
+    }
+
+    return null;
   }
 
 }

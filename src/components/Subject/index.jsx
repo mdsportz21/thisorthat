@@ -5,18 +5,13 @@ import Image from 'react-image-resizer';
 
 class Subject extends Component {
 
-  constructor() {
-    super();
-    this.handleClick = this.handleClick.bind(this); //2
-  }
-
   handleClick(e) {
-    this.props.onClick(this.props.side); //3
+    this.props.onClick(e); //3
   }
 
   render() {
-    return (
-      <div onClick={this.handleClick}>
+    const subjectDiv = this.props.team ? (
+      <div onClick={(e) => this.handleClick(e)}>
         <Image 
           src={this.props.team.imgLink} 
           alt={this.props.team.name}
@@ -26,13 +21,20 @@ class Subject extends Component {
         />
         <p>{this.props.team.name}</p>
       </div>
+    ) : (
+      <div></div>
+    );
+
+    return (
+      <div>
+        {subjectDiv}
+      </div>
     );
   }
 }
 
 Subject.propTypes = {
   onClick: PropTypes.func,
-  side: PropTypes.object,
   team: PropTypes.object
 };
 
