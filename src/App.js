@@ -109,7 +109,7 @@ class App extends PureComponent {
    */
 
   componentDidMount() {
-    BracketActions.fetchBracket('15', '');
+    BracketActions.fetchBracket('inaugural_bracket', '');
   }
 
   handleSaveClick() {
@@ -158,13 +158,14 @@ class App extends PureComponent {
       <div></div> 
     );
     
-
     return (
       <div className="App">
           
         <div className="Title">
           <h2>Brack It</h2>
         </div>
+
+        <h4>{this.props.bracketWrapper && this.props.bracketWrapper.bracket.name}</h4>
 
         <div className="Subjects">
             <Subject 

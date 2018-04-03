@@ -25,5 +25,7 @@ Sources:
   1. https://code.google.com/archive/p/jsdoc-toolkit/wikis/TagParam.wiki
 
   Todo
-  1. https://www.kirupa.com/react/creating_single_page_app_react_using_react_router.htm
-  2. https://flow.org/en/docs/install/
+  1. Highlight winning subject
+
+  * https://www.kirupa.com/react/creating_single_page_app_react_using_react_router.htm
+  * https://flow.org/en/docs/install/
