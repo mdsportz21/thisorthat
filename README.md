@@ -11,7 +11,9 @@ https://github.com/mdsportz21/react-tournament-bracket.git
   
 Local Bracket  
 0. git clone https://github.com/mdsportz21/react-tournament-bracket.git
-1. npm link
+0.5. cd this-or-that
+1. npm link ../react-tournament-bracket/
+1.5. cd react-tournament-bracket
 2. npx babel src --out-dir lib
 
 Sources:  

@@ -9,6 +9,20 @@ class Subject extends Component {
     this.props.onClick(e); //3
   }
 
+  getLabelComponent(text) {
+    const { team, isWinner } = this.props;
+    const name = team.name;
+    if (isWinner) {
+      return (
+        <h3>{name}</h3>
+      );
+    }
+
+    return (
+      <p>{name}</p>
+    );
+  }
+
   render() {
     const subjectDiv = this.props.team ? (
       <div onClick={(e) => this.handleClick(e)}>
@@ -19,7 +33,7 @@ class Subject extends Component {
           width={200}
           height={200}
         />
-        <p>{this.props.team.name}</p>
+        {this.getLabelComponent()}
       </div>
     ) : (
       <div></div>
