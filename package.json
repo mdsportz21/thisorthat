@@ -10,7 +10,7 @@
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.2.2",
     "react-table": "^6.5.1",
-    "react-tournament-bracket": "git+https://github.com/mdsportz21/react-tournament-bracket.git"
+    "react-tournament-bracket": "github:mdsportz21/react-tournament-bracket"
   },
   "devDependencies": {
     "alt-utils": "^1.0.0",

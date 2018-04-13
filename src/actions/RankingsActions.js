@@ -1,10 +1,11 @@
 import alt from '../alt';
 import axios from 'axios';
+import UrlUtils from '../utils/UrlUtils';
 
 class RankingsActions {
   fetchRankings() {
     return (dispatch) => {
-      axios.get('http://localhost:5000/api/ranking')
+      axios.get(UrlUtils.constructUrl('api/ranking'))
         .then(response => {
           dispatch(response.data.rankings);
         })

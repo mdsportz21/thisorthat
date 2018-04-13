@@ -1,11 +1,12 @@
 import alt from '../alt';
 import axios from 'axios';
+import UrlUtils from '../utils/UrlUtils';
 
 class SubjectActions {
 
   saveSelection(subjects) {
     return (dispatch) => {
-      axios.post('http://localhost:5000/api/subjects', {subjects})
+      axios.post(UrlUtils.constructUrl('api/subjects'), {subjects})
         .then(function (response) {
           dispatch(response.data.responseSaved);
         })
@@ -17,7 +18,7 @@ class SubjectActions {
 
   fetchSubjects() {
     return (dispatch) => {
-      axios.get('http://localhost:5000/api/subjects')
+      axios.get(UrlUtils.constructUrl('api/subjects'))
         .then(response => {
           dispatch(response.data); // {subjects: {}, percentCompleted: number}
         })
