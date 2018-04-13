@@ -8,7 +8,7 @@ Install
 
 Dependencies
 https://github.com/mdsportz21/react-tournament-bracket.git
-  
+
 Local Bracket  
 0. git clone https://github.com/mdsportz21/react-tournament-bracket.git
 0.5. cd this-or-that
@@ -31,3 +31,5 @@ Sources:
 
   * https://www.kirupa.com/react/creating_single_page_app_react_using_react_router.htm
   * https://flow.org/en/docs/install/
+
+  * CORS Fix: CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://damp-ridge-24839.herokuapp.com"]}})
