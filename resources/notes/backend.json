@@ -1,0 +1,70 @@
+{
+   "bracket_wrapper" : {
+      "bracket" : {
+         "rounds" : [
+            {
+               "matchups" : [
+                  {
+                     "winnerSlotId" : "None",
+                     "matchupId" : "5a66941dd6f45f0caab3d280",
+                     "slotTwoId" : "5a66941d00a50bae299dd9aa",
+                     "sourceMatchupTwoId" : "None",
+                     "sourceMatchupOneId" : "None",
+                     "slotOneId" : "5a66941d00a50bae299dd9a4",
+                     "region" : null
+                  },
+                  {
+                     "winnerSlotId" : "None",
+                     "matchupId" : "5a66941dd6f45f0caab3d281",
+                     "region" : null,
+                     "slotOneId" : "5a66941d00a50bae299dd9a6",
+                     "sourceMatchupOneId" : "None",
+                     "sourceMatchupTwoId" : "None",
+                     "slotTwoId" : "5a66941d00a50bae299dd9a8"
+                  }
+               ]
+            },
+            {
+               "matchups" : [
+                  {
+                     "winnerSlotId" : "None",
+                     "matchupId" : "5a66941dd6f45f0caab3d282",
+                     "sourceMatchupTwoId" : "5a66941dd6f45f0caab3d281",
+                     "slotTwoId" : "None",
+                     "region" : null,
+                     "slotOneId" : "None",
+                     "sourceMatchupOneId" : "5a66941dd6f45f0caab3d280"
+                  }
+               ]
+            }
+         ],
+         "name" : "final_four"
+      },
+      "teams" : [
+         {
+            "slotId" : "5a66941d00a50bae299dd9a4",
+            "name" : "Aberdeen Ironbirds",
+            "seed" : "1",
+            "imgLink" : "http://images.footballfanatics.com/FFImage/thumb.aspx?i=/productImages/_2280000/ff_2280914_full.jpg&w=600"
+         },
+         {
+            "name" : "Aberdeen Steamed Crabs",
+            "seed" : "2",
+            "imgLink" : "http://images.footballfanatics.com/FFImage/thumb.aspx?i=/productImages/_2808000/ff_2808206_full.jpg&w=600",
+            "slotId" : "5a66941d00a50bae299dd9a6"
+         },
+         {
+            "slotId" : "5a66941d00a50bae299dd9a8",
+            "imgLink" : "http://static1.squarespace.com/static/594061048419c282ed731d4a/59406864d482e90beeb42ec9/594c3fcb44024311bb70a1f2/1498169292727/thumb+%2815%29.jpeg",
+            "seed" : "3",
+            "name" : "Akron RubberDucks"
+         },
+         {
+            "name" : "Albuquerque Dukes",
+            "seed" : "4",
+            "imgLink" : "http://lf.lids.com/hwl?set=sku[20868220],c[2],w[400],h[300]&call=url[file:product]",
+            "slotId" : "5a66941d00a50bae299dd9aa"
+         }
+      ]
+   }
+}

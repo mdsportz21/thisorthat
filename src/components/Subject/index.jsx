@@ -24,6 +24,7 @@ class Subject extends Component {
   }
 
   render() {
+    const { hideLabel } = this.props;
     const subjectDiv = this.props.team ? (
       <div onClick={(e) => this.handleClick(e)}>
         <Image 
@@ -33,7 +34,7 @@ class Subject extends Component {
           width={200}
           height={200}
         />
-        {this.getLabelComponent()}
+        { hideLabel ? null : this.getLabelComponent() }
       </div>
     ) : (
       <div></div>
@@ -49,7 +50,8 @@ class Subject extends Component {
 
 Subject.propTypes = {
   onClick: PropTypes.func,
-  team: PropTypes.object
+  team: PropTypes.object,
+  hideLabel: PropTypes.bool
 };
 
 Subject.defaultProps = { // 2

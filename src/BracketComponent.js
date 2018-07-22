@@ -120,10 +120,10 @@ BracketComponent.getPropsFromStores = function() {
   const sideTwo = selectedGame ? selectedGame.sides.visitor : null;
 
   const selectedGameHomeTeam = selectedGame ? selectedGame.sides.home.team : null;
-  const selecteeGameVisitorTeam = selectedGame ? selectedGame.sides.visitor.team : null;
+  const selectedGameVisitorTeam = selectedGame ? selectedGame.sides.visitor.team : null;
 
   const teamOne = teamsBySlotId && selectedGameHomeTeam ? teamsBySlotId[selectedGameHomeTeam.id] : null;
-  const teamTwo = teamsBySlotId && selecteeGameVisitorTeam ? teamsBySlotId[selecteeGameVisitorTeam.id] : null;
+  const teamTwo = teamsBySlotId && selectedGameVisitorTeam ? teamsBySlotId[selectedGameVisitorTeam.id] : null;
 
   return {
     bracketWrapper,

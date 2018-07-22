@@ -40,3 +40,22 @@
   padding-left: 35px;
   padding-right: 20px;
 }
+
+.box {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.dupe-candidate {
+  /* flex: 1; */
+  width: 200px;
+}
+
+.dupe {
+  opacity:0.3;
+}
+
+.dupe-candidates {
+  width: 1000px;
+  padding-bottom: 20px;
+}

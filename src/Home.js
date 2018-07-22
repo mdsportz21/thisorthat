@@ -24,7 +24,7 @@ class Home extends Component {
         Name:
         <input type="text" value={this.state.bracketName} onChange={(e) => this.handleChange(e)} />
       </label>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Brack It" />
     </form>
   );
 
