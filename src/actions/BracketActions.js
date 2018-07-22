@@ -1,6 +1,7 @@
 import alt from '../alt';
 import axios from 'axios';
 import BracketUtils from '../utils/BracketUtils';
+import UrlUtils from '../utils/UrlUtils';
 
 class BracketActions {
 
@@ -35,7 +36,7 @@ class BracketActions {
   saveBracket(finals, bracketName) {
     const bracketResults = BracketUtils.collectResults(finals);
     return (dispatch) => {
-      axios.post('http://localhost:5000/api/bracket/' + bracketName + '/results', bracketResults)
+      axios.post(UrlUtils.constructUrl('api/bracket/' + bracketName + '/results'), bracketResults)
         .then(function (response) {
           dispatch(response.data);
         })
@@ -52,7 +53,7 @@ class BracketActions {
    */
   fetchBracket(bracketName, entryName) {
     return (dispatch) => {
-      axios.get('http://localhost:5000/api/bracket/' + bracketName)
+      axios.get(UrlUtils.constructUrl('api/bracket/' + bracketName))
         .then(response => {
           dispatch(response.data);
         })
