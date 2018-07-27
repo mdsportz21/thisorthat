@@ -9,7 +9,8 @@ class BracketStore {
       handleSaveBracket: BracketActions.saveBracket,
       handleFetchBracket: BracketActions.fetchBracket,
       handleSelectGame: BracketActions.selectGame,
-      handleSelectWinner: BracketActions.selectWinner
+      handleSelectWinner: BracketActions.selectWinner,
+      handleFetchBracketFields: BracketActions.fetchBracketFields
     });
 
     this.state = {
@@ -63,6 +64,14 @@ class BracketStore {
 
   handleSaveBracket(response) {
     console.log(response);
+  }
+
+  handleFetchBracketFields(bracketFieldsResponse) {
+    const bracketFields = bracketFieldsResponse.bracketFields;
+
+    this.setState({
+      bracketFields
+    });
   }
 }
 

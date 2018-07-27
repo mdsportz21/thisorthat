@@ -62,6 +62,18 @@ class BracketActions {
         });
     };
   }
+
+  fetchBracketFields() {
+    return (dispatch) => {
+      axios.get(UrlUtils.constructUrl('api/bracket'))
+        .then(response => {
+          dispatch(response.data);
+        })
+        .catch((errorMessage) => {
+          console.error(errorMessage);
+        });
+    };
+  }
 }
 
 export default alt.createActions(BracketActions);

@@ -17,8 +17,11 @@ class BracketComponent extends Component {
       }
       return;
     }
-    const bracketName = search.substring(search.indexOf('=') + 1);
-    BracketActions.fetchBracket(bracketName);
+    // const bracketName = search.substring(search.indexOf('=') + 1);
+    // BracketActions.fetchBracket(bracketName);
+
+    const bracketFieldId = search.substring(search.indexOf('=') + 1);
+    BracketActions.generateBracketInstance(bracketFieldId);
   }
 
   handleSaveClick() {

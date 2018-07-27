@@ -1,40 +1,62 @@
 import React, { Component } from "react";
+import connectToStores from 'alt-utils/lib/connectToStores';
+import BracketStore from './stores/BracketStore';
+import BracketActions from './actions/BracketActions';
  
 class Home extends Component {
+
   constructor(props) {
     super(props);
-    this.state = {bracketName: ''};
+    this.state = {bracketFields: []};
   }
 
-  handleChange(event) {
-    this.setState({bracketName: event.target.value});
+  componentDidMount() {
+    BracketActions.fetchBracketFields();
   }
 
-  handleSubmit(event) {
+  handleBracketFieldClick(bracketFieldId) {
     this.props.history.push({
       pathname: '/bracket',
-      search: '?name=' + this.state.bracketName
-    })
-    event.preventDefault();
+      search: '?id=' + bracketFieldId
+    });
   }
 
-  NameForm = () => (
-    <form onSubmit={(e) => this.handleSubmit(e)}>
-      <label>
-        Name:
-        <input type="text" value={this.state.bracketName} onChange={(e) => this.handleChange(e)} />
-      </label>
-      <input type="submit" value="Brack It" />
-    </form>
-  );
+  BracketFieldList = (props) => {
+    const { bracketFields } = props;
+    const listItems = bracketFields.map((bracketField) =>
+      <li key={bracketField.bracketFieldId} onClick={(e) => this.handleBracketFieldClick(bracketField.bracketFieldId)}>
+        {bracketField.name}
+      </li>
+    );
+    return (
+      <ul>
+        {listItems}
+      </ul>
+    );
+  }
 
   render() {
-    const { NameForm } = this;
+    const { BracketFieldList } = this;
+    const { bracketFields } = this.props;
 
     return (
-      <NameForm />
+      <div>
+        {bracketFields && <BracketFieldList bracketFields={bracketFields} />}
+      </div>
     );
   }
 }
+
+Home.getStores = function() {
+  return [BracketStore];
+};
+
+Home.getPropsFromStores = function() {
+  const { bracketFields } = BracketStore.getState();
+
+  return {
+    bracketFields
+  };
+}
  
-export default Home;
+export default connectToStores(Home);
