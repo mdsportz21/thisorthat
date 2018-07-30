@@ -74,6 +74,23 @@ class BracketActions {
         });
     };
   }
+
+  generateBracketInstance(bracketFieldId) {
+    return (dispatch) => {
+      const bracketInstanceCreationRequest = {
+        'bracketFieldId': bracketFieldId,
+        'user': 'mdsportz21',
+        'seedingStrategy': 'random'
+      };
+      axios.post(UrlUtils.constructUrl('api/bracket'), bracketInstanceCreationRequest)
+        .then(function (response) {
+          dispatch(response.data);
+        })
+        .catch(function (error) {
+          console.error(error)
+        });
+    }
+  }
 }
 
 export default alt.createActions(BracketActions);

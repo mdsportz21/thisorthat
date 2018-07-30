@@ -10,7 +10,8 @@ class BracketStore {
       handleFetchBracket: BracketActions.fetchBracket,
       handleSelectGame: BracketActions.selectGame,
       handleSelectWinner: BracketActions.selectWinner,
-      handleFetchBracketFields: BracketActions.fetchBracketFields
+      handleFetchBracketFields: BracketActions.fetchBracketFields,
+      handleGenerateBracketInstance: BracketActions.generateBracketInstance
     });
 
     this.state = {
@@ -73,6 +74,12 @@ class BracketStore {
       bracketFields
     });
   }
+
+  handleGenerateBracketInstance(response) {
+    
+  }
+
+
 }
 
 export default alt.createStore(BracketStore, 'BracketStore');

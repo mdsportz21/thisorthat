@@ -316,6 +316,7 @@ export default class {
   }
 
   /**
+   * Converts rounds into the React Tournament Bracket component object format
    * 
    * @param {Round[]} rounds 
    * @param {Object.<string, TournamentTeam>} teamsBySlotId 
