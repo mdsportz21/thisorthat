@@ -24,7 +24,7 @@ class BracketStore {
     const { finals } = this.state;
 
     BracketUtils.setWinner(finals, side.gameId, side.team.id, null);
-    const selectedGame = BracketUtils.selectDefaultGame(finals);
+    const selectedGame = BracketUtils.selectDefaultTournamentGame(finals);
 
     this.setState({
       finals,
@@ -36,7 +36,7 @@ class BracketStore {
     const { finals } = this.state;
     const { gameId } = response;
 
-    const selectedGame = BracketUtils.selectGame(finals, gameId);
+    const selectedGame = BracketUtils.selectTournamentGame(finals, gameId);
 
     this.setState({
       finals,
@@ -52,8 +52,8 @@ class BracketStore {
      * We're gonna need this to fill out sides.
      */
     const teamsBySlotId = BracketUtils.getTeamsBySlotId(bracketWrapper.teams);
-    const finals = BracketUtils.getFinals(rounds, teamsBySlotId);
-    const selectedGame = BracketUtils.selectDefaultGame(finals);
+    const finals = BracketUtils.getFinalTournamentGame(rounds, teamsBySlotId);
+    const selectedGame = BracketUtils.selectDefaultTournamentGame(finals);
 
     this.setState({
       bracketWrapper,
@@ -76,7 +76,20 @@ class BracketStore {
   }
 
   handleGenerateBracketInstance(response) {
-    
+    const bracketInstance = response.bracketInstance;
+    const { bracketField, rounds } = bracketInstance;
+    const teams = bracketField.teams;
+
+    const teamsById = BracketUtils.getTeamsById(teams);
+    const finalTournamentGame = BracketUtils.getFinalTournamentGame(rounds, teamsById);
+    const selectedGame = BracketUtils.selectDefaultTournamentGame(finalTournamentGame);
+
+    this.setState({
+      bracketInstance,
+      teamsById,
+      finalTournamentGame,
+      selectedGame
+    });
   }
 
 

@@ -37,13 +37,13 @@ class Home extends Component {
 
   render() {
     const { BracketFieldList } = this;
-    // const { bracketFields } = this.props;
+    const { bracketFields } = this.props;
 
     // TEST
-    const bracketFields = [
-      { 'name': 'Bracket 1', 'bracketFieldId': '1', 'teamCount': 503 },
-      { 'name': 'Bracket 2', 'bracketFieldId': '2', 'teamCount': 26 }
-    ];
+    // const bracketFields = [
+    //   { 'name': 'Bracket 1', 'bracketFieldId': '1', 'teamCount': 503 },
+    //   { 'name': 'Bracket 2', 'bracketFieldId': '2', 'teamCount': 26 }
+    // ];
 
     return (
       <div>
