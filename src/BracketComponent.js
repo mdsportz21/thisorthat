@@ -5,14 +5,15 @@ import Subject from './components/Subject';
 import BracketStore from './stores/BracketStore';
 import BracketActions from './actions/BracketActions';
 import {BracketGame, Bracket} from 'react-tournament-bracket';
+import * as types from './types';
  
 class BracketComponent extends Component {
 
   componentDidMount() {
-    const { finals, history } = this.props;
+    const { finalTournamentGame, history } = this.props;
     const { search } = history.location;
     if (!search) {
-      if (!finals) {
+      if (!finalTournamentGame) {
         history.push('/');
       }
       return;
@@ -25,13 +26,13 @@ class BracketComponent extends Component {
   }
 
   handleSaveClick() {
-    const { finals, bracketWrapper } = this.props;
-    BracketActions.saveBracket(finals, bracketWrapper.bracket.name);
+    const { finalTournamentGame, bracketWrapper } = this.props;
+    // BracketActions.saveBracket(finalTournamentGame, bracketInstance.bracket.name);
   }
 
   /**
    * 
-   * @param {TournamentSide} side 
+   * @param {types.TournamentSide} side 
    */
   handleSideClick(side) {
     if (side.team != null) {
@@ -43,7 +44,7 @@ class BracketComponent extends Component {
 
   /**
    * Highlight game on rollover
-   * @param {TournamentGame} game 
+   * @param {types.TournamentGame} game 
    */
   handleGameMouseEnter(game) {
     BracketActions.selectGame(game.id);
@@ -61,16 +62,20 @@ class BracketComponent extends Component {
     );
   };
 
+  /**
+   * 
+   * @param {types.TournamentSide} side 
+   */
   isWinner(side) {
     return side && side.score && side.score.score === 1;
   }
 
   render() {
-    const { sideOne, sideTwo, teamOne, teamTwo, homeOnTop, finals, bracketWrapper } = this.props;
+    const { sideOne, sideTwo, teamOne, teamTwo, homeOnTop, finalTournamentGame, bracketInstance } = this.props;
     const { gameComponent: GameComponent } = this; 
 
-    const bracket = finals ? (
-      <Bracket game={finals} homeOnTop={homeOnTop} GameComponent={GameComponent}  />
+    const bracket = finalTournamentGame ? (
+      <Bracket game={finalTournamentGame} homeOnTop={homeOnTop} GameComponent={GameComponent}  />
     ) : ( 
       <div></div> 
     );
@@ -82,7 +87,7 @@ class BracketComponent extends Component {
           <h2>Brack It</h2>
         </div>
 
-        <h4>{bracketWrapper && bracketWrapper.bracket.name}</h4>
+        <h4>{bracketInstance && bracketInstance.bracketField.name}</h4>
 
         <div className="Subjects">
             <Subject 
@@ -117,7 +122,9 @@ BracketComponent.getStores = function() {
 };
 
 BracketComponent.getPropsFromStores = function() {
-  const { bracketWrapper, teamsBySlotId, finals, selectedGame } = BracketStore.getState();
+  /** @type {types.BracketStore} */
+  const bracketStoreState = BracketStore.getState();
+  const { bracketInstance, teamsById, finalTournamentGame, selectedGame } = bracketStoreState;
 
   const sideOne = selectedGame ? selectedGame.sides.home : null;
   const sideTwo = selectedGame ? selectedGame.sides.visitor : null;
@@ -125,13 +132,13 @@ BracketComponent.getPropsFromStores = function() {
   const selectedGameHomeTeam = selectedGame ? selectedGame.sides.home.team : null;
   const selectedGameVisitorTeam = selectedGame ? selectedGame.sides.visitor.team : null;
 
-  const teamOne = teamsBySlotId && selectedGameHomeTeam ? teamsBySlotId[selectedGameHomeTeam.id] : null;
-  const teamTwo = teamsBySlotId && selectedGameVisitorTeam ? teamsBySlotId[selectedGameVisitorTeam.id] : null;
+  const teamOne = teamsById && selectedGameHomeTeam ? teamsById[selectedGameHomeTeam.id] : null;
+  const teamTwo = teamsById && selectedGameVisitorTeam ? teamsById[selectedGameVisitorTeam.id] : null;
 
   return {
-    bracketWrapper,
-    teamsBySlotId,
-    finals,
+    bracketInstance,
+    teamsById,
+    finalTournamentGame,
     sideOne,
     sideTwo,
     teamOne,

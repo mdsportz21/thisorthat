@@ -1,113 +1,8 @@
+import * as types from '../types';
+
 export default class {
-
-  // Backend Types
-
-  /**
-   * The main object
-   * @typedef {Object} BracketInstance
-   * @property {string} bracketInstanceId
-   * @property {Round[]} rounds
-   * @property {BracketField} bracketField the id of the bracket field the bracket instance was created from
-   * @property {string} user
-   */
-
-   /**
-    * @typedef {Object} BracketField
-    * @property {string} bracketFieldId
-    * @property {string} name
-    * @property {Team[]} teams
-    */
-
-  /**
-   * @typedef {Object} Round
-   * @property {Matchup[]} matchups
-   */
-
-  /**
-   * @typedef {Object} Matchup
-   * @property {string} matchupId
-   * @property {string} sourceMatchupTwoId
-   * @property {string} sourceMatchupOneId
-   * @property {string} teamOneId
-   * @property {string} teamTwoId
-   * @property {string} winnerTeamId
-   */
-
-  /**
-   * @typedef {Object} Team
-   * @property {string} name
-   * @property {string} imgLink
-   * @property {string} teamId
-   * @property {number} seed
-   */
-
-  // Not sure if we'll keep using the following backend types
-  // Alternatively, we can just send:
-  // 1. bracket instance id
-  // 2. list of rounds
-
-  /**
-  * Bracket Results
-  * @typedef {Object} BracketResults
-  * @property {BracketResult[]} results
-  */
-
-  /**
-   * Bracket Result
-   * @typedef {Object} BracketResult
-   * @property {string} matchupId
-   * @property {string} winnerTeamId
-   */
-
-  // React Tournament Bracket Types (Frontend Types)
-
-  /**
-   * A Team
-   * @typedef {Object} TournamentTeam
-   * @property {string} id
-   * @property {string} name
-   */
-
-  /**
-   * A Score
-   * @typedef {Object} TournamentScore
-   * @property {number} score
-   */
-
-  /**
-   * A Game. Brackets are built from the finals to the first round, recursively, using gameObject.sides.visitor|home.seed.sourceGame.
-   * @typedef {Object} TournamentGame
-   * @property {string} id
-   * @property {string} name
-   * @property {TournamentSides} sides
-   * @property {boolean} selected
-   */
-
-  /**
-   * A Seed
-   * @typedef {Object} TournamentSeed
-   * @property {TournamentGame} sourceGame
-   * @property {number} rank
-   * @property {string} displayName
-   */
-
-  /**
-   * A Side
-   * @typedef {Object} TournamentSide
-   * @property {string} gameId
-   * @property {TournamentTeam} team
-   * @property {TournamentScore} score
-   * @property {TournamentSeed} seed
-   */
-
-  /**
-   * Sides
-   * @typedef {Object} TournamentSides
-   * @property {TournamentSide} visitor
-   * @property {TournamentSide} home
-   */
-
-// To React Bracket
+  
+  // To React Bracket
 
   // TODO: figure out if this is still what's being sent for null values
   // TODO: figure out how to do constants in js
@@ -115,8 +10,8 @@ export default class {
 
   /**
    * 
-   * @param {Team[]} teams 
-   * @returns {Object.<string, Team>} teams by team ID
+   * @param {types.Team[]} teams 
+   * @returns {Object.<string, types.Team>} teams by team ID
    */
   static getTeamsById(teams) {
     return teams.reduce(function(teamsById, team) {
@@ -128,8 +23,8 @@ export default class {
   /**
    * 
    * @param {String} teamId 
-   * @param {Object.<string, Team>} teamsById
-   * @returns {TournamentTeam} team
+   * @param {Object.<string, types.Team>} teamsById
+   * @returns {types.TournamentTeam} team
    */
   static createTournamentTeam(teamId, teamsById) {
     if (teamId === this.NONE) {
@@ -147,7 +42,7 @@ export default class {
    * 
    * @param {string} teamId
    * @param {string} winnerTeamId 
-   * @returns {TournamentScore}
+   * @returns {types.TournamentScore}
    */
   static createTournamentScore(teamId, winnerTeamId) {
     const score = winnerTeamId !== this.NONE && winnerTeamId === teamId ? 1 : 0;
@@ -159,8 +54,8 @@ export default class {
   /**
    * 
    * @param {string} sourceMatchupId 
-   * @param {Object.<string, TournamentGame>} tournamentGamesByMatchupId
-   * @returns {TournamentSeed}
+   * @param {Object.<string, types.TournamentGame>} tournamentGamesByMatchupId
+   * @returns {types.TournamentSeed}
    */
   static createTournamentSeed(sourceMatchupId, tournamentGamesByMatchupId) {
     return {
@@ -173,8 +68,8 @@ export default class {
   /**
    * Used to get the source game
    * @param {string} matchupId 
-   * @param {Object.<string, TournamentGame>} tournamentGamesByMatchupId
-   * @returns {TournamentGame}
+   * @param {Object.<string, types.TournamentGame>} tournamentGamesByMatchupId
+   * @returns {types.TournamentGame}
    */
   static getTournamentGameByMatchupId(matchupId, tournamentGamesByMatchupId) {
     if (matchupId !== null && tournamentGamesByMatchupId.hasOwnProperty(matchupId)) {
@@ -190,9 +85,9 @@ export default class {
    * @param {string} teamId 
    * @param {string} sourceMatchupId 
    * @param {string} winnerTeamId 
-   * @param {Object.<string, Team>} teamsById
-   * @param {Object.<string, TournamentGame>} tournamentGamesByMatchupId
-   * @returns {TournamentSide}
+   * @param {Object.<string, types.Team>} teamsById
+   * @param {Object.<string, types.TournamentGame>} tournamentGamesByMatchupId
+   * @returns {types.TournamentSide}
    */
   static createTournamentSide(matchupId, teamId, sourceMatchupId, winnerTeamId, teamsById, tournamentGamesByMatchupId) {
     return {
@@ -215,10 +110,10 @@ export default class {
 
   /**
    * 
-   * @param {Matchup} matchup 
-   * @param {Object.<string, Team>} teamsById
-   * @param {Object.<string, TournamentGame>} tournamentGamesByMatchupId
-   * @returns {TournamentSides}
+   * @param {types.Matchup} matchup 
+   * @param {Object.<string, types.Team>} teamsById
+   * @param {Object.<string, types.TournamentGame>} tournamentGamesByMatchupId
+   * @returns {types.TournamentSides}
    */
   static createTournamentSides(matchup, teamsById, tournamentGamesByMatchupId) {
     return {
@@ -231,8 +126,8 @@ export default class {
    * 
    * @param {number} roundIdx 
    * @param {number} matchupIdx 
-   * @param {Round[]} rounds
-   * @returns {Matchup}
+   * @param {types.Round[]} rounds
+   * @returns {types.Matchup}
    */
   static getMatchup(roundIdx, matchupIdx, rounds) {
     return rounds[roundIdx].matchups[matchupIdx];
@@ -240,12 +135,12 @@ export default class {
 
   /**
    * 
-   * @param {Matchup} matchup 
+   * @param {types.Matchup} matchup 
    * @param {number} roundIdx 
    * @param {number} matchupIdx 
-   * @param {Object.<string, Team>} teamsById
-   * @param {Object.<string, TournamentGame>} tournamentGamesByMatchupId
-   * @returns {TournamentGame}
+   * @param {Object.<string, types.Team>} teamsById
+   * @param {Object.<string, types.TournamentGame>} tournamentGamesByMatchupId
+   * @returns {types.TournamentGame}
    */
   static createTournamentGame(matchup, roundIdx, matchupIdx, teamsById, tournamentGamesByMatchupId) {
     return {
@@ -260,10 +155,10 @@ export default class {
   /**
    * Creates the games for a round
    * 
-   * @param {Round} round 
+   * @param {types.Round} round 
    * @param {number} roundIdx 
-   * @param {Object.<string, Team>} teamsById
-   * @param {Object.<string, TournamentGame>} tournamentGamesByMatchupId
+   * @param {Object.<string, types.Team>} teamsById
+   * @param {Object.<string, types.TournamentGame>} tournamentGamesByMatchupId
    */
   static createTournamentGamesByMatchupIdForRound(round, roundIdx, teamsById, tournamentGamesByMatchupId) {
     return round.matchups.map((matchup, matchupIdx) => {
@@ -277,10 +172,10 @@ export default class {
 
   /**
    * And unselect other games
-   * @param {TournamentGame} game 
+   * @param {types.TournamentGame} game 
    * @param {string} gameId 
    * @param {boolean} toSelect
-   * @returns {TournamentGame} selected game
+   * @returns {types.TournamentGame} selected game
    */
   static selectTournamentGame(game, gameId) {
     let selectedGame = null;
@@ -316,9 +211,9 @@ export default class {
    * with the finals at the root, the return value of this method
    * contains the entire bracket.
    * 
-   * @param {Round[]} rounds 
-   * @param {Object.<string, Team>} teamsById 
-   * @returns {TournamentGame}
+   * @param {types.Round[]} rounds 
+   * @param {Object.<string, types.Team>} teamsById 
+   * @returns {types.TournamentGame}
    */
   static getFinalTournamentGame(rounds, teamsById) {
     const tournamentGamesByMatchupId = this.getTournamentGamesByMatchupId(rounds, teamsById);
@@ -328,8 +223,8 @@ export default class {
 
   /**
    * Marks the first game with no winner as selected. For display only.
-   * @param {TournamentGame} finals 
-   * @returns {TournamentGame}
+   * @param {types.TournamentGame} finals 
+   * @returns {types.TournamentGame}
    */
   static selectDefaultTournamentGame(finals) {
     let firstUnfilledGame = this.getFirstUnfilledTournamentGame(finals);
@@ -344,8 +239,8 @@ export default class {
 
   /**
    * Returns the earliest game that has no winner
-   * @param {TournamentGame} game 
-   * @returns {TournamentGame}
+   * @param {types.TournamentGame} game 
+   * @returns {types.TournamentGame}
    */
   static getFirstUnfilledTournamentGame(game) {
     let unfilledGame = null;
@@ -377,8 +272,8 @@ export default class {
 
   /**
    * Returns winning team, or null if tied
-   * @param {TournamentGame} game  
-   * @returns {TournamentSide}
+   * @param {types.TournamentGame} game  
+   * @returns {types.TournamentSide}
    */
   static getWinningTournamentSide(game) {
     const sideOne = game.sides.home;
@@ -392,9 +287,9 @@ export default class {
 
   /**
    * Map of matchupId to TournamentGame. Should be populated as the games are created.
-   * @param {Round[]} rounds 
-   * @param {Object.<string, Team>} teamsById 
-   * @returns {Object.<string, TournamentGame>} tournament games by matchup id
+   * @param {types.Round[]} rounds 
+   * @param {Object.<string, types.Team>} teamsById 
+   * @returns {Object.<string, types.TournamentGame>} tournament games by matchup id
    */
   static getTournamentGamesByMatchupId(rounds, teamsById) {
     const tournamentGamesByMatchupId = {};
@@ -409,8 +304,8 @@ export default class {
   // TODO: consider replacing this by reconstructing the rounds
   /**
    * Get results from bracket
-   * @param {TournamentGame} root
-   * @returns {BracketResults} list of bracket results
+   * @param {types.TournamentGame} root
+   * @returns {types.BracketResults} list of bracket results
    */
   static collectResults(root) {
     const winnerTeamIdByMatchupId = this.getResults(root, {});
@@ -429,7 +324,7 @@ export default class {
   // TODO: figure out how this is used
   /**
    * Recursively search the tree to populate winners
-   * @param {TournamentGame} root
+   * @param {types.TournamentGame} root
    * @param {Object.<string, string>} winnerTeamIdByMatchupId
    * @returns {Object.<string, string>} map of matchup id to winning team id
    */
@@ -454,11 +349,11 @@ export default class {
 
   /**
    * Recursively search the tree for the game with gameId. Once found, set the winner, and clear out the loser from any parent nodes.
-   * @param {TournamentGame} root The game from which to start the search. from the root, traverse towards the first round.
+   * @param {types.TournamentGame} root The game from which to start the search. from the root, traverse towards the first round.
    * @param {string} gameId ID of the game to set the winner on
    * @param {string} winningTeamId winner of the game
-   * @param {string} nextTournamentGameId ID of the game that the winner plays in next (parentId)
-   * @returns {GameResult} winning and losing team of the game in question. passed up to the root from whichever game it was set. null if the game was not found in the bracket.
+   * @param {?string} nextTournamentGameId ID of the game that the winner plays in next (parentId)
+   * @returns {types.GameResult} winning and losing team of the game in question. passed up to the root from whichever game it was set. null if the game was not found in the bracket.
    */
   static setWinner(root, gameId, winningTeamId, nextTournamentGameId) {
     if (root.id === gameId) {

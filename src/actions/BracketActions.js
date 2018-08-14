@@ -2,6 +2,7 @@ import alt from '../alt';
 import axios from 'axios';
 import BracketUtils from '../utils/BracketUtils';
 import UrlUtils from '../utils/UrlUtils';
+import * as types from '../types';
 
 class BracketActions {
 
@@ -30,11 +31,11 @@ class BracketActions {
   }
   /**
    * 
-   * @param {TournamentGame} finals 
+   * @param {TournamentGame} finalTournamentGame 
    * @param {string} bracketName 
    */
-  saveBracket(finals, bracketName) {
-    const bracketResults = BracketUtils.collectResults(finals);
+  saveBracket(finalTournamentGame, bracketName) {
+    const bracketResults = BracketUtils.collectResults(finalTournamentGame);
     return (dispatch) => {
       axios.post(UrlUtils.constructUrl('api/bracket/' + bracketName + '/results'), bracketResults)
         .then(function (response) {
@@ -78,11 +79,10 @@ class BracketActions {
   generateBracketInstance(bracketFieldId) {
     return (dispatch) => {
       const bracketInstanceCreationRequest = {
-        'bracketFieldId': bracketFieldId,
         'user': 'mdsportz21',
         'seedingStrategy': 'random'
       };
-      axios.post(UrlUtils.constructUrl('api/bracket'), bracketInstanceCreationRequest)
+      axios.post(UrlUtils.constructUrl('api/bracket/' + bracketFieldId + '/instance'), bracketInstanceCreationRequest)
         .then(function (response) {
           dispatch(response.data);
         })
