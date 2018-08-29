@@ -25,7 +25,7 @@ class Home extends Component {
     const { bracketFields } = props;
     const listItems = bracketFields.map((bracketField) =>
       <li key={bracketField.bracketFieldId} onClick={(e) => this.handleBracketFieldClick(bracketField.bracketFieldId)}>
-        {bracketField.name}
+        {bracketField.name} ({bracketField.teamCount})
       </li>
     );
     return (
@@ -38,6 +38,12 @@ class Home extends Component {
   render() {
     const { BracketFieldList } = this;
     const { bracketFields } = this.props;
+
+    // TEST
+    // const bracketFields = [
+    //   { 'name': 'Bracket 1', 'bracketFieldId': '1', 'teamCount': 503 },
+    //   { 'name': 'Bracket 2', 'bracketFieldId': '2', 'teamCount': 26 }
+    // ];
 
     return (
       <div>
