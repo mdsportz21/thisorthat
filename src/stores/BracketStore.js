@@ -1,7 +1,7 @@
 import alt from '../alt';
 import BracketActions from '../actions/BracketActions';
 import BracketUtils from '../utils/BracketUtils';
-import * as types from '../types';
+// import * as types from '../types';
 
 class BracketStore {
 

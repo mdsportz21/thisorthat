@@ -8,7 +8,7 @@ class BracketActions {
 
   /**
    * Select a winner of a game
-   * @param {TournamentSide} side 
+   * @param {types.TournamentSide} side 
    */
   selectWinner(side) {
     return (dispatch) => {
@@ -31,7 +31,7 @@ class BracketActions {
   }
   /**
    * 
-   * @param {TournamentGame} finalTournamentGame 
+   * @param {types.TournamentGame} finalTournamentGame 
    * @param {string} bracketName 
    */
   saveBracket(finalTournamentGame, bracketName) {

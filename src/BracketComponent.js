@@ -5,7 +5,7 @@ import Subject from './components/Subject';
 import BracketStore from './stores/BracketStore';
 import BracketActions from './actions/BracketActions';
 import {BracketGame, Bracket} from 'react-tournament-bracket';
-import * as types from './types';
+// import * as types from './types';
  
 class BracketComponent extends Component {
 
