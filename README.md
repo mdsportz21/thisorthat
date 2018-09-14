@@ -28,6 +28,7 @@ Sources:
   1. https://github.com/moodysalem/react-tournament-bracket  
   1. https://stackoverflow.com/questions/31234500/create-react-component-dynamically - Creating react components dynamically 
   1. https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#deployment - building production assets
+  1. https://devcenter.heroku.com/articles/nodejs-support - Set NODE_ENV to test
 
 
 
