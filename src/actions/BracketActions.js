@@ -2,7 +2,7 @@ import alt from '../alt';
 import axios from 'axios';
 import BracketUtils from '../utils/BracketUtils';
 import UrlUtils from '../utils/UrlUtils';
-import * as types from '../types';
+import * as types from '../types';  // eslint-disable-line no-unused-vars
 
 class BracketActions {
 

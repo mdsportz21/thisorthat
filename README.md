@@ -6,6 +6,12 @@ Install
 1. npm install rc-progress  
 <!-- 2. yarn add react-tournament-bracket   -->
 
+Deploy
+1. cd this-or-that
+2. heroku git:remote -a damp-ridge-24839
+2. git push heroku master
+
+
 Dependencies
 https://github.com/mdsportz21/react-tournament-bracket.git
 
@@ -21,6 +27,8 @@ Sources:
   1. https://react-table.js.org/#/story/readme  
   1. https://github.com/moodysalem/react-tournament-bracket  
   1. https://stackoverflow.com/questions/31234500/create-react-component-dynamically - Creating react components dynamically 
+  1. https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#deployment - building production assets
+
 
 
   Documentation  

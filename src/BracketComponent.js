@@ -26,7 +26,7 @@ class BracketComponent extends Component {
   }
 
   handleSaveClick() {
-    const { finalTournamentGame, bracketWrapper } = this.props;
+    // const { finalTournamentGame, bracketWrapper } = this.props;
     // BracketActions.saveBracket(finalTournamentGame, bracketInstance.bracket.name);
   }
 
