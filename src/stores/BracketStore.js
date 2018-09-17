@@ -1,10 +1,10 @@
 import alt from '../alt';
 import BracketActions from '../actions/BracketActions';
 import BracketUtils from '../utils/BracketUtils';
-// import * as types from '../types';
+import BracketGenerator from '../utils/BracketGenerator';
+import * as types from '../types'; // eslint-disable-line no-unused-vars
 
 class BracketStore {
-
   /**
    * @typedef {Object} SelectWinnerResponse
    * @property {types.TournamentSide} side the selected (winning) side
@@ -14,10 +14,15 @@ class BracketStore {
    * @typedef {Object} SelectGameResponse
    * @property {string} gameId id of the selected game
    */
-  
+
   /**
    * @typedef {Object} BracketFieldsResponse
    * @property {types.BracketField[]} bracketFields
+   */
+
+  /**
+   * @typedef {Object} BracketInstanceResponse
+   * @property {types.BracketInstance} bracketInstance
    */
 
   constructor() {
@@ -27,12 +32,12 @@ class BracketStore {
       handleSelectGame: BracketActions.selectGame,
       handleSelectWinner: BracketActions.selectWinner,
       handleFetchBracketFields: BracketActions.fetchBracketFields,
-      handleGenerateBracketInstance: BracketActions.generateBracketInstance
+      handleGenerateBracketInstance: BracketActions.generateBracketInstance,
     });
 
     /** @type {types.BracketStore} */
     this.state = {
-      homeOnTop: false
+      homeOnTop: false,
     };
   }
 
@@ -45,17 +50,17 @@ class BracketStore {
 
 
     BracketUtils.setWinner(finalTournamentGame, side.gameId, side.team.id, null);
-    const selectedGame = BracketUtils.selectDefaultTournamentGame(finalTournamentGame);
+    const selectedGame = BracketGenerator.selectDefaultTournamentGame(finalTournamentGame);
 
     this.setState({
       finalTournamentGame,
-      selectedGame
+      selectedGame,
     });
   }
 
   /**
-   * 
-   * @param {SelectGameResponse} response 
+   *
+   * @param {SelectGameResponse} response
    */
   handleSelectGame(response) {
     const { finalTournamentGame } = this.state;
@@ -65,28 +70,29 @@ class BracketStore {
 
     this.setState({
       finalTournamentGame,
-      selectedGame
+      selectedGame,
     });
   }
 
   // TODO: update this
   handleFetchBracket(bracketResponse) {
-    const bracketInstnace = bracketResponse.bracket_wrapper;
-    const rounds = bracketInstnace.bracket.rounds;
+    console.log(bracketResponse);
+    // const bracketInstance = bracketResponse.bracket_wrapper;
+    // const rounds = bracketInstance.bracket.rounds;
 
-    /**
-     * We're gonna need this to fill out sides.
-     */
-    const teamsBySlotId = BracketUtils.getTeamsBySlotId(bracketInstnace.teams);
-    const finalTournamentGame = BracketUtils.getFinalTournamentGame(rounds, teamsBySlotId);
-    const selectedGame = BracketUtils.selectDefaultTournamentGame(finalTournamentGame);
+    // /**
+    //  * We're gonna need this to fill out sides.
+    //  */
+    // const teamsBySlotId = BracketUtils.getTeamsBySlotId(bracketInstance.teams);
+    // const finalTournamentGame = BracketUtils.getFinalTournamentGame(rounds, teamsBySlotId);
+    // const selectedGame = BracketUtils.selectDefaultTournamentGame(finalTournamentGame);
 
-    this.setState({
-      bracketInstnace,
-      teamsBySlotId,
-      finalTournamentGame,
-      selectedGame
-    });
+    // this.setState({
+    //   bracketInstance,
+    //   teamsBySlotId,
+    //   finalTournamentGame,
+    //   selectedGame
+    // });
   }
 
   // TODO: revisit this
@@ -95,39 +101,39 @@ class BracketStore {
   }
 
   /**
-   * 
-   * @param {BracketFieldsResponse} bracketFieldsResponse 
+   *
+   * @param {BracketFieldsResponse} bracketFieldsResponse
    */
   handleFetchBracketFields(bracketFieldsResponse) {
     const { bracketFields } = bracketFieldsResponse;
 
     this.setState({
-      bracketFields
+      bracketFields,
     });
   }
 
   /**
-   * 
-   * @param response { import("../utils/BracketUtils").BracketInstance }
+   *
+   * @param {BracketInstanceResponse} response
    */
   handleGenerateBracketInstance(response) {
-    const bracketInstance = response.bracketInstance;
+    const { bracketInstance } = response;
     const { bracketField, rounds } = bracketInstance;
-    const teams = bracketField.teams;
+    const { teams } = bracketField;
 
-    const teamsById = BracketUtils.getTeamsById(teams);
-    const finalTournamentGame = BracketUtils.getFinalTournamentGame(rounds, teamsById);
-    const selectedGame = BracketUtils.selectDefaultTournamentGame(finalTournamentGame);
+    const { rootGame, teamsById, gamesForDisplay } = BracketGenerator.generateBracket(rounds, teams);
+    const gamesForDisplayIndex = BracketGenerator.getFirstUnfilledGameForDisplayIndex(gamesForDisplay);
+    const selectedGame = BracketGenerator.selectDefaultTournamentGame(gamesForDisplay[gamesForDisplayIndex]);
 
     this.setState({
       bracketInstance,
       teamsById,
-      finalTournamentGame,
-      selectedGame
+      rootGame,
+      selectedGame,
+      gamesForDisplay,
+      gamesForDisplayIndex,
     });
   }
-
-
 }
 
 export default alt.createStore(BracketStore, 'BracketStore');

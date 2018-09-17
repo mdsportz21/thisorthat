@@ -55,8 +55,8 @@ class BracketComponent extends Component {
       <BracketGame
         {...props}
         // onHoveredTeamIdChange={hoveredTeamId => this.setState({ hoveredTeamId })}
-        onSideClick={(side) => this.handleSideClick(side)}
-        onMouseEnter={() => this.handleGameMouseEnter(props.game)}
+        // onSideClick={(side) => this.handleSideClick(side)}
+        onClick={() => this.handleGameMouseEnter(props.game)}
         // hoveredTeamId={this.state.hoveredTeamId}
         />
     );

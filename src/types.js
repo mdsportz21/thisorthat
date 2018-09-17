@@ -68,6 +68,24 @@ export type TournamentScore = {
 }
 
 
+// A Game. Brackets are built from the finals to the first round, recursively, using gameObject.sides.visitor|home.seed.sourceGame.
+export type TournamentGame = {
+  id: string;
+  name: string;
+  sides: TournamentSides;
+  selected: boolean;
+}
+
+
+// A Seed
+export type TournamentSeed = {
+  sourceGame: TournamentGame;
+  rank: number;
+  displayName: string;
+  sourceGameId: string; // this is used to populate sourceGame
+}
+
+
 // A Side
 export type TournamentSide = {
   gameId: string;
@@ -83,24 +101,12 @@ export type TournamentSides = {
   home: TournamentSide;
 }
 
-
-// A Game. Brackets are built from the finals to the first round, recursively, using gameObject.sides.visitor|home.seed.sourceGame.
-export type TournamentGame = {
-  id: string;
-  name: string;
-  sides: TournamentSides;
-  selected: boolean;
+// Everything we need for display
+export type BracketInfo = {
+  rootGame: TournamentGame;
+  teamsById: Object.<string, types.Team>;
+  gamesForDisplay: TournamentGame[];
 }
-
-
-// A Seed
-export type TournamentSeed = {
-  sourceGame: TournamentGame;
-  rank: number;
-  displayName: string;
-}
-
-
 
 // STORES
 

@@ -1,6 +1,6 @@
 import alt from '../alt';
 import axios from 'axios';
-import BracketUtils from '../utils/BracketUtils';
+import BracketResultsGenerator from '../utils/BracketResultsGenerator';
 import UrlUtils from '../utils/UrlUtils';
 import * as types from '../types';  // eslint-disable-line no-unused-vars
 
@@ -35,7 +35,7 @@ class BracketActions {
    * @param {string} bracketName 
    */
   saveBracket(finalTournamentGame, bracketName) {
-    const bracketResults = BracketUtils.collectResults(finalTournamentGame);
+    const bracketResults = BracketResultsGenerator.collectResults(finalTournamentGame);
     return (dispatch) => {
       axios.post(UrlUtils.constructUrl('api/bracket/' + bracketName + '/results'), bracketResults)
         .then(function (response) {

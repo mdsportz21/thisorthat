@@ -1,6 +1,7 @@
 run:  
-1. Run front end react server (start_TOT_react)  
-2. Run back end http server (start_TOT_rest_python_server)  
+1. npm start 
+2. Run back end http server (start_TOT_rest_python_server)
+3. ./node_modules/.bin/eslint FILE --fix 
   
 Install  
 1. npm install rc-progress  
@@ -15,12 +16,22 @@ Deploy
 Dependencies
 https://github.com/mdsportz21/react-tournament-bracket.git
 
-Local Bracket  
+Test with local react-tournament-bracket  
 0. git clone https://github.com/mdsportz21/react-tournament-bracket.git
 0.5. cd this-or-that
 1. npm link ../react-tournament-bracket/
 1.5. cd react-tournament-bracket
 2. npx babel src --out-dir lib
+
+Test with remote react-tournament-bracket (untested)
+1. npm unlink ../react-tournament-bracket/
+2. npm i react-tournament-bracket@github:mdsportz21/react-tournament-bracket
+
+Update react-tournament-bracket
+1. In react-tournament bracket, Make changes
+2. npm run build
+3. push
+4. In this-or-that, rm -rf node_modules && npm i
 
 Sources:  
   1. https://github.com/goatslacker/alt  
