@@ -35,7 +35,9 @@ class BracketActions {
    */
   showPage(pageIndex) {
     return (dispatch) => {
-      dispatch(pageIndex);
+      dispatch({
+        pageIndex
+      });
     };
   }
 

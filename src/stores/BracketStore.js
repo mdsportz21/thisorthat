@@ -5,25 +5,6 @@ import BracketGenerator from '../utils/BracketGenerator';
 import * as types from '../types'; // eslint-disable-line no-unused-vars
 
 class BracketStore {
-  /**
-   * @typedef {Object} SelectWinnerResponse
-   * @property {types.TournamentSide} side the selected (winning) side
-   */
-
-  /**
-   * @typedef {Object} SelectGameResponse
-   * @property {string} gameId id of the selected game
-   */
-
-  /**
-   * @typedef {Object} BracketFieldsResponse
-   * @property {types.BracketField[]} bracketFields
-   */
-
-  /**
-   * @typedef {Object} BracketInstanceResponse
-   * @property {types.BracketInstance} bracketInstance
-   */
 
   constructor() {
     this.bindListeners({
@@ -44,50 +25,42 @@ class BracketStore {
   }
 
   handleShowFirstUnfinishedPage() {
-    const { bracketDisplayInfo } = this.state;
-    const { gamesForDisplay } = bracketDisplayInfo;
+    const { gamesForDisplay } = this.state;
     const gamesForDisplayIndex = BracketGenerator.getFirstUnfilledGameForDisplayIndex(gamesForDisplay);
-    this.handleShowPage(gamesForDisplayIndex);
+    this.handleShowPage({pageIndex: gamesForDisplayIndex});
   }
 
   /**
    *
-   * @param {number} gamesForDisplayIndex
+   * @param {{pageIndex: number}} response
    */
-  handleShowPage(gamesForDisplayIndex) {
-    const { bracketDisplayInfo } = this.state;
-    const { gamesForDisplay } = bracketDisplayInfo;
-    const newDisplayedRootGame = gamesForDisplay[gamesForDisplayIndex];
-    const selectedGame = BracketGenerator.selectDefaultTournamentGame(newDisplayedRootGame);
-
-    // TODO: is there a way to set multiple properties on an object in one line?
-    bracketDisplayInfo.displayedRootGame = newDisplayedRootGame;
-    bracketDisplayInfo.gamesForDisplayIndex = gamesForDisplayIndex;
-    bracketDisplayInfo.selectedGame = selectedGame;
+  handleShowPage(response) {
+    const { pageIndex: gamesForDisplayIndex } = response;
+    const { gamesForDisplay } = this.state;
+    const displayedRootGame = gamesForDisplay[gamesForDisplayIndex];
+    const selectedGame = BracketGenerator.selectDefaultTournamentGame(displayedRootGame);
 
     this.setState({
-      bracketDisplayInfo,
+      gamesForDisplayIndex,
+      displayedRootGame,
+      selectedGame,
     });
   }
 
   /**
-   * @param {SelectWinnerResponse} response
+   * @param {{side: types.TournamentSide}} response
    */
   handleSelectWinner(response) {
     const { side } = response;
     /** @type {types.BracketStore} */
-    const { bracketDisplayInfo } = this.state;
-    const { rootGame, displayedRootGame } = bracketDisplayInfo;
+    const { rootGame, displayedRootGame } = this.state;
 
     BracketUtils.setWinner(rootGame, side);
     BracketUtils.setWinner(displayedRootGame, side);
 
-    // TODO: verify that i have to do this
-    bracketDisplayInfo.rootGame = rootGame;
-    bracketDisplayInfo.displayedRootGame = displayedRootGame;
-
     this.setState({
-      bracketDisplayInfo,
+      rootGame,
+      displayedRootGame
     });
 
     this.handleShowFirstUnfinishedPage();
@@ -95,23 +68,18 @@ class BracketStore {
 
   /**
    *
-   * @param {SelectGameResponse} response
+   * @param {{gameId: string}} response
    */
   handleSelectGame(response) {
     /** @type {types.BracketStore} */
-    const { bracketDisplayInfo } = this.state;
-    const { displayedRootGame } = bracketDisplayInfo;
+    const { displayedRootGame } = this.state;
     const { gameId } = response;
 
     const selectedGame = BracketUtils.selectTournamentGame(displayedRootGame, gameId);
 
-    // TODO: not sure if we need to do:
-    // bracketDisplayInfo.displayedRootGame = displayedRootGame;
-
     this.setState({
-      // TODO: not sure if we need to set:
-      bracketDisplayInfo,
-      selectedGame,
+      displayedRootGame,
+      selectedGame
     });
   }
 
@@ -143,7 +111,7 @@ class BracketStore {
 
   /**
    *
-   * @param {BracketFieldsResponse} bracketFieldsResponse
+   * @param {{bracketFields: types.BracketField[]}} bracketFieldsResponse
    */
   handleFetchBracketFields(bracketFieldsResponse) {
     const { bracketFields } = bracketFieldsResponse;
@@ -155,7 +123,7 @@ class BracketStore {
 
   /**
    *
-   * @param {BracketInstanceResponse} response
+   * @param {{bracketInstance: types.BracketInstance}} response
    */
   handleGenerateBracketInstance(response) {
     const { bracketInstance } = response;
@@ -166,7 +134,7 @@ class BracketStore {
 
     this.setState({
       bracketInstance,
-      bracketDisplayInfo,
+      ...bracketDisplayInfo,
     });
   }
 }

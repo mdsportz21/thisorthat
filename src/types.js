@@ -116,7 +116,13 @@ export type BracketDisplayInfo = {
 
 export type BracketStore = {
   bracketFields: BracketField[];
-  bracketDisplayInfo: BracketDisplayInfo;
   bracketInstance: BracketInstance;
   homeOnTop: boolean;
+  // bracketDisplayInfo: BracketDisplayInfo;
+  displayedRootGame: TournamentGame; // root of the portion of the bracket that is currently being displayed
+  gamesForDisplay: TournamentGame[];
+  gamesForDisplayIndex: number;
+  rootGame: TournamentGame;
+  selectedGame: TournamentGame; // of the displayed games, the one that is currently selected
+  teamsById: { [x: string]: Team }; // teamsById: Object.<string, Team>;
 }

@@ -47,7 +47,8 @@ Sources:
   1. https://code.google.com/archive/p/jsdoc-toolkit/wikis/TagParam.wiki
 
   Todo
-  
+  9-18-18:
+  1. Figure out how to deal with image loading lag
   9-17-18: 
   1. Test bracket pagination 
   2. display seed in react tournament bracket component
