@@ -47,7 +47,11 @@ Sources:
   1. https://code.google.com/archive/p/jsdoc-toolkit/wikis/TagParam.wiki
 
   Todo
-  1. Highlight winning subject
+  
+  9-17-18: 
+  1. Test bracket pagination 
+  2. display seed in react tournament bracket component
+  3. figure out how to fix react-specific linting issues
 
   * https://www.kirupa.com/react/creating_single_page_app_react_using_react_router.htm
   * https://flow.org/en/docs/install/

@@ -1,0 +1,4 @@
+extends: airbnb
+rules:
+    max-len: warn
+    class-methods-use-this: warn

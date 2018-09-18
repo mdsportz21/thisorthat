@@ -5,15 +5,26 @@ import Subject from './components/Subject';
 import BracketStore from './stores/BracketStore';
 import BracketActions from './actions/BracketActions';
 import {BracketGame, Bracket} from 'react-tournament-bracket';
-// import * as types from './types';
+import * as types from './types'; // eslint-disable-line no-unused-vars
  
 class BracketComponent extends Component {
+  /**
+   * @typedef {Object} BracketComponentProps
+   * @property {types.BracketInstance} bracketInstance
+   * @property {types.BracketDisplayInfo} bracketDisplayInfo
+   * @property {boolean} homeOnTop
+   * @property {types.TournamentSide} sideOne
+   * @property {types.TournamentSide} sideTwo
+   * @property {types.Team} teamOne
+   * @property {types.Team} teamTwo
+   */
 
   componentDidMount() {
-    const { finalTournamentGame, history } = this.props;
+    /** @type {BracketComponentProps} */
+    const { rootGame, history } = this.props;
     const { search } = history.location;
     if (!search) {
-      if (!finalTournamentGame) {
+      if (!rootGame) {
         history.push('/');
       }
       return;
@@ -38,15 +49,13 @@ class BracketComponent extends Component {
     if (side.team != null) {
       BracketActions.selectWinner(side);
     }
-
-    // TODO: Add this same handler to the subject click handler
   }
 
   /**
    * Highlight game on rollover
    * @param {types.TournamentGame} game 
    */
-  handleGameMouseEnter(game) {
+  handleGameClick(game) {
     BracketActions.selectGame(game.id);
   }
 
@@ -56,7 +65,7 @@ class BracketComponent extends Component {
         {...props}
         // onHoveredTeamIdChange={hoveredTeamId => this.setState({ hoveredTeamId })}
         // onSideClick={(side) => this.handleSideClick(side)}
-        onClick={() => this.handleGameMouseEnter(props.game)}
+        onClick={() => this.handleGameClick(props.game)}
         // hoveredTeamId={this.state.hoveredTeamId}
         />
     );
@@ -70,24 +79,62 @@ class BracketComponent extends Component {
     return side && side.score && side.score.score === 1;
   }
 
-  render() {
-    const { sideOne, sideTwo, teamOne, teamTwo, homeOnTop, finalTournamentGame, bracketInstance } = this.props;
-    const { gameComponent: GameComponent } = this; 
+  handlePreviousPageClick() {
+    /** @type {BracketComponentProps} */
+    const { bracketDisplayInfo } = this.props;
+    const { gamesForDisplayIndex } = bracketDisplayInfo;
+    if (gamesForDisplayIndex > 0) {
+      BracketActions.showPage(gamesForDisplayIndex - 1);
+    }
+  }
 
-    const bracket = finalTournamentGame ? (
-      <Bracket game={finalTournamentGame} homeOnTop={homeOnTop} GameComponent={GameComponent}  />
+  handleFirstUnfinishedPageClick() {
+    BracketActions.showFirstUnfinishedPage();
+  }
+
+  handleNextPageClick() {
+    /** @type {BracketComponentProps} */
+    const { bracketDisplayInfo } = this.props;
+    const { gamesForDisplayIndex, gamesForDisplay } = bracketDisplayInfo;
+    if (gamesForDisplayIndex < gamesForDisplay.length - 1 ) {
+      BracketActions.showPage(gamesForDisplayIndex + 1);
+    }
+  }
+
+  render() {
+    /** @type {BracketComponentProps} */
+    const { sideOne, sideTwo, teamOne, teamTwo, homeOnTop, bracketDisplayInfo, bracketInstance } = this.props;
+    /** @type {types.BracketDisplayInfo} */
+    const { 
+      displayedRootGame, 
+      gamesForDisplay,
+      gamesForDisplayIndex 
+    } = bracketDisplayInfo;
+    const { gameComponent: GameComponent } = this;
+
+    const bracket = displayedRootGame ? (
+      <Bracket game={displayedRootGame} homeOnTop={homeOnTop} GameComponent={GameComponent}  />
     ) : ( 
       <div></div> 
     );
     
+    // TODO: replace pagination buttons with slider maybe
     return (
       <div className="App">
           
-        <div className="Title">
+        {/* <div className="Title">
           <h2>Brack It</h2>
-        </div>
+        </div> */}
 
         <h4>{bracketInstance && bracketInstance.bracketField.name}</h4>
+
+        <h5>{gamesForDisplay && "Page " + (gamesForDisplayIndex + 1) + " of " + gamesForDisplay.length}</h5>
+
+        <span>
+          <button onClick={ (e) => this.handlePreviousPageClick() }>Previous Page</button>
+          <button onClick={ (e) => this.handleFirstUnfinishedPageClick() }>First Unfinished Page</button>
+          <button onClick={ (e) => this.handleNextPageClick() }>Next Page</button>
+        </span>
 
         <div className="Subjects">
             <Subject 
@@ -124,7 +171,8 @@ BracketComponent.getStores = function() {
 BracketComponent.getPropsFromStores = function() {
   /** @type {types.BracketStore} */
   const bracketStoreState = BracketStore.getState();
-  const { bracketInstance, teamsById, finalTournamentGame, selectedGame } = bracketStoreState;
+  const { bracketInstance, bracketDisplayInfo, homeOnTop} = bracketStoreState;
+  const { selectedGame, teamsById } = bracketDisplayInfo;
 
   const sideOne = selectedGame ? selectedGame.sides.home : null;
   const sideTwo = selectedGame ? selectedGame.sides.visitor : null;
@@ -137,12 +185,12 @@ BracketComponent.getPropsFromStores = function() {
 
   return {
     bracketInstance,
-    teamsById,
-    finalTournamentGame,
+    bracketDisplayInfo,
     sideOne,
     sideTwo,
     teamOne,
-    teamTwo
+    teamTwo,
+    homeOnTop
   };
 };
  

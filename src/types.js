@@ -72,6 +72,7 @@ export type TournamentScore = {
 export type TournamentGame = {
   id: string;
   name: string;
+  // eslint-disable-next-line
   sides: TournamentSides;
   selected: boolean;
 }
@@ -102,19 +103,20 @@ export type TournamentSides = {
 }
 
 // Everything we need for display
-export type BracketInfo = {
-  rootGame: TournamentGame;
-  teamsById: Object.<string, types.Team>;
+export type BracketDisplayInfo = {
+  displayedRootGame : TournamentGame; // root of the portion of the bracket that is currently being displayed
   gamesForDisplay: TournamentGame[];
+  gamesForDisplayIndex: number;
+  rootGame: TournamentGame;
+  selectedGame: TournamentGame; // of the displayed games, the one that is currently selected
+  teamsById: { [x: string]: Team }; // teamsById: Object.<string, Team>;
 }
 
 // STORES
 
 export type BracketStore = {
-  homeOnTop: boolean;
-  finalTournamentGame: TournamentGame;
-  selectedGame: TournamentGame;
   bracketFields: BracketField[];
+  bracketDisplayInfo: BracketDisplayInfo;
   bracketInstance: BracketInstance;
-  teamsById: Map<string, Team>;
+  homeOnTop: boolean;
 }

@@ -1,13 +1,13 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Route,
   NavLink,
-  HashRouter
-} from "react-router-dom";
-import Home from "./Home";
-import BracketComponent from "./BracketComponent";
-import Rankings from "./Rankings";
-import Deduper from "./Deduper";
+  HashRouter,
+} from 'react-router-dom';
+import Home from './Home';
+import BracketComponent from './BracketComponent';
+import Rankings from './Rankings';
+import Deduper from './Deduper';
 
 class Main extends Component {
   render() {
@@ -22,15 +22,15 @@ class Main extends Component {
             <li><NavLink to="/dedupe">Duplicates</NavLink></li>
           </ul>
           <div className="content">
-            <Route exact path="/" component={Home}/>
-            <Route path="/bracket" component={BracketComponent}/>
-            <Route path="/rankings" component={Rankings}/>
-            <Route path="/dedupe" component={Deduper}/>
+            <Route exact path="/" component={Home} />
+            <Route path="/bracket" component={BracketComponent} />
+            <Route path="/rankings" component={Rankings} />
+            <Route path="/dedupe" component={Deduper} />
           </div>
         </div>
       </HashRouter>
     );
   }
 }
- 
+
 export default Main;

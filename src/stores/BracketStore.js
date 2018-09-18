@@ -33,6 +33,8 @@ class BracketStore {
       handleSelectWinner: BracketActions.selectWinner,
       handleFetchBracketFields: BracketActions.fetchBracketFields,
       handleGenerateBracketInstance: BracketActions.generateBracketInstance,
+      handleShowPage: BracketActions.showPage,
+      handleShowFirstUnfinishedPage: BracketActions.showFirstUnfinishedPage,
     });
 
     /** @type {types.BracketStore} */
@@ -41,21 +43,54 @@ class BracketStore {
     };
   }
 
+  handleShowFirstUnfinishedPage() {
+    const { bracketDisplayInfo } = this.state;
+    const { gamesForDisplay } = bracketDisplayInfo;
+    const gamesForDisplayIndex = BracketGenerator.getFirstUnfilledGameForDisplayIndex(gamesForDisplay);
+    this.handleShowPage(gamesForDisplayIndex);
+  }
+
+  /**
+   *
+   * @param {number} gamesForDisplayIndex
+   */
+  handleShowPage(gamesForDisplayIndex) {
+    const { bracketDisplayInfo } = this.state;
+    const { gamesForDisplay } = bracketDisplayInfo;
+    const newDisplayedRootGame = gamesForDisplay[gamesForDisplayIndex];
+    const selectedGame = BracketGenerator.selectDefaultTournamentGame(newDisplayedRootGame);
+
+    // TODO: is there a way to set multiple properties on an object in one line?
+    bracketDisplayInfo.displayedRootGame = newDisplayedRootGame;
+    bracketDisplayInfo.gamesForDisplayIndex = gamesForDisplayIndex;
+    bracketDisplayInfo.selectedGame = selectedGame;
+
+    this.setState({
+      bracketDisplayInfo,
+    });
+  }
+
   /**
    * @param {SelectWinnerResponse} response
    */
   handleSelectWinner(response) {
     const { side } = response;
-    const { finalTournamentGame } = this.state;
+    /** @type {types.BracketStore} */
+    const { bracketDisplayInfo } = this.state;
+    const { rootGame, displayedRootGame } = bracketDisplayInfo;
 
+    BracketUtils.setWinner(rootGame, side);
+    BracketUtils.setWinner(displayedRootGame, side);
 
-    BracketUtils.setWinner(finalTournamentGame, side.gameId, side.team.id, null);
-    const selectedGame = BracketGenerator.selectDefaultTournamentGame(finalTournamentGame);
+    // TODO: verify that i have to do this
+    bracketDisplayInfo.rootGame = rootGame;
+    bracketDisplayInfo.displayedRootGame = displayedRootGame;
 
     this.setState({
-      finalTournamentGame,
-      selectedGame,
+      bracketDisplayInfo,
     });
+
+    this.handleShowFirstUnfinishedPage();
   }
 
   /**
@@ -63,18 +98,24 @@ class BracketStore {
    * @param {SelectGameResponse} response
    */
   handleSelectGame(response) {
-    const { finalTournamentGame } = this.state;
+    /** @type {types.BracketStore} */
+    const { bracketDisplayInfo } = this.state;
+    const { displayedRootGame } = bracketDisplayInfo;
     const { gameId } = response;
 
-    const selectedGame = BracketUtils.selectTournamentGame(finalTournamentGame, gameId);
+    const selectedGame = BracketUtils.selectTournamentGame(displayedRootGame, gameId);
+
+    // TODO: not sure if we need to do:
+    // bracketDisplayInfo.displayedRootGame = displayedRootGame;
 
     this.setState({
-      finalTournamentGame,
+      // TODO: not sure if we need to set:
+      bracketDisplayInfo,
       selectedGame,
     });
   }
 
-  // TODO: update this
+  // TODO: rewrite this once we are fetching brackets again
   handleFetchBracket(bracketResponse) {
     console.log(bracketResponse);
     // const bracketInstance = bracketResponse.bracket_wrapper;
@@ -95,7 +136,7 @@ class BracketStore {
     // });
   }
 
-  // TODO: revisit this
+  // TODO: rewrite this once we're saving bracket instances again
   handleSaveBracket(response) {
     console.log(response);
   }
@@ -121,17 +162,11 @@ class BracketStore {
     const { bracketField, rounds } = bracketInstance;
     const { teams } = bracketField;
 
-    const { rootGame, teamsById, gamesForDisplay } = BracketGenerator.generateBracket(rounds, teams);
-    const gamesForDisplayIndex = BracketGenerator.getFirstUnfilledGameForDisplayIndex(gamesForDisplay);
-    const selectedGame = BracketGenerator.selectDefaultTournamentGame(gamesForDisplay[gamesForDisplayIndex]);
+    const bracketDisplayInfo = BracketGenerator.generateBracketDisplayInfo(rounds, teams);
 
     this.setState({
       bracketInstance,
-      teamsById,
-      rootGame,
-      selectedGame,
-      gamesForDisplay,
-      gamesForDisplayIndex,
+      bracketDisplayInfo,
     });
   }
 }
