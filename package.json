@@ -7,6 +7,7 @@
     "alt": "^0.18.6",
     "axios": "^0.16.2",
     "rc-progress": "^2.2.5",
+    "rc-slider": "^8.6.2",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
     "react-router-dom": "^4.3.1",

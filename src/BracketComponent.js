@@ -6,6 +6,8 @@ import BracketStore from './stores/BracketStore';
 import BracketActions from './actions/BracketActions';
 import { BracketGame, Bracket } from 'react-tournament-bracket';
 import * as types from './types'; // eslint-disable-line no-unused-vars
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 class BracketComponent extends Component {
   /**
@@ -104,6 +106,10 @@ class BracketComponent extends Component {
     }
   }
 
+  handleSliderChange(value) {
+    BracketActions.showPage(value - 1);
+  }
+
   render() {
     /** @type {BracketComponentProps} */
     const {
@@ -119,13 +125,13 @@ class BracketComponent extends Component {
 
     const sideOne = selectedGame ? selectedGame.sides.home : null;
     const sideTwo = selectedGame ? selectedGame.sides.visitor : null;
-  
+
     const selectedGameHomeTeam = selectedGame ? selectedGame.sides.home.team : null;
     const selecteeGameVisitorTeam = selectedGame ? selectedGame.sides.visitor.team : null;
-  
+
     const teamOne = teamsById && selectedGameHomeTeam ? teamsById[selectedGameHomeTeam.id] : null;
     const teamTwo = teamsById && selecteeGameVisitorTeam ? teamsById[selecteeGameVisitorTeam.id] : null;
-  
+
     const bracket = displayedRootGame ? (
       <Bracket game={displayedRootGame} homeOnTop={homeOnTop} GameComponent={GameComponent} />
     ) : (
@@ -136,19 +142,24 @@ class BracketComponent extends Component {
     return (
       <div className="App">
 
-        {/* <div className="Title">
-          <h2>Brack It</h2>
-        </div> */}
-
         <h4>{bracketInstance && bracketInstance.bracketField.name}</h4>
 
         <h5>{gamesForDisplay && "Page " + (gamesForDisplayIndex + 1) + " of " + gamesForDisplay.length}</h5>
 
-        <span>
-          <button onClick={(e) => this.handlePreviousPageClick()}>Previous Page</button>
-          <button onClick={(e) => this.handleFirstUnfinishedPageClick()}>First Unfinished Page</button>
-          <button onClick={(e) => this.handleNextPageClick()}>Next Page</button>
-        </span>
+        {/* <button onClick={(e) => this.handlePreviousPageClick()}>Previous Page</button> */}
+        <button onClick={(e) => this.handleFirstUnfinishedPageClick()}>First Unfinished Page</button>
+        {/* <button onClick={(e) => this.handleNextPageClick()}>Next Page</button> */}
+
+        <div>
+          {gamesForDisplay &&
+            <Slider
+              min={1}
+              max={gamesForDisplay.length}
+              value={gamesForDisplayIndex + 1}
+              onChange={(value) => this.handleSliderChange(value)}
+            // onAfterChange={(value) => this.handleSliderChange(value)}
+            />}
+        </div>
 
         <div className="Subjects">
           <Subject
