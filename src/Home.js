@@ -11,7 +11,8 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    BracketActions.fetchBracketFields();
+    const { auth } = this.props;
+    BracketActions.fetchBracketFields(auth);
   }
 
   handleBracketFieldClick(bracketFieldId) {
