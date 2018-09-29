@@ -40,8 +40,9 @@ Sources:
   1. https://stackoverflow.com/questions/31234500/create-react-component-dynamically - Creating react components dynamically 
   1. https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#deployment - building production assets
   1. https://devcenter.heroku.com/articles/nodejs-support - Set NODE_ENV to test
-
-
+  1. https://auth0.com/blog/react-tutorial-building-and-securing-your-first-app/ - Securing your React App / Create an API
+  1. https://github.com/auth0-blog/react-flux-jwt-authentication-sample/tree/dd1fba7791a51f3d26af66d32931e36f55ebb869/src - JWT on frontend
+  1. https://auth0.com/docs/tokens/id-token - create an API so that we get a JWT access token
 
   Documentation  
   1. https://code.google.com/archive/p/jsdoc-toolkit/wikis/TagParam.wiki

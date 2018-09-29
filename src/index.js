@@ -1,9 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Main from "./Main";
+import Nav from "./Nav";
 import "./index.css";
- 
+import { makeMainRoutes } from './routes';
+
+const routes = makeMainRoutes();
+
 ReactDOM.render(
-  <Main/>, 
+  <div>
+    <Nav />
+    {routes}
+  </div>,
   document.getElementById("root")
 );

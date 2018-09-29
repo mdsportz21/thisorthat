@@ -82,9 +82,11 @@ class BracketActions {
     };
   }
 
-  fetchBracketFields() {
+  fetchBracketFields(auth) {
+    const { getAccessToken } = auth;
+    const headers = { 'Authorization': `Bearer ${getAccessToken()}` }
     return (dispatch) => {
-      axios.get(UrlUtils.constructUrl('api/bracket'))
+      axios.get(UrlUtils.constructUrl('api/bracket'), { headers })
         .then((response) => {
           dispatch(response.data);
         })
