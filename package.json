@@ -5,7 +5,7 @@
   "dependencies": {
     "ajv": "^6.5.3",
     "alt": "^0.18.6",
-    "auth0-js": "^9.7.3",
+    "auth0-js": "^9.13.2",
     "axios": "^0.16.2",
     "rc-progress": "^2.2.5",
     "rc-slider": "^8.6.2",
